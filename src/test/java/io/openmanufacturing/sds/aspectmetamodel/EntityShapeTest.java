@@ -105,7 +105,7 @@ public class EntityShapeTest extends AbstractShapeTest {
    }
 
    @ParameterizedTest
-   @MethodSource( value = "allVersions" )
+   @MethodSource( value = "versionsUpToIncluding1_0_0" )
    public void testEntityRefiningEntityDeclaresAdditionalPropertiesExpectFailure(
          final KnownVersion metaModelVersion ) {
       final SemanticError result = getSingleSemanticValidationError(

@@ -1,0 +1,725 @@
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+#  See the AUTHORS file(s) distributed with this work for additional
+#  information regarding authorship.
+#
+#  This Source Code Form is subject to the terms of the Mozilla Public
+#  License, v. 2.0. If a copy of the MPL was not distributed with this
+#  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+
+@prefix mmm: <urn:bamm:io.openmanufacturing:meta-meta-model:2.0.0#> .
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+bamm-c:TraitShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:Trait ;
+   sh:property [
+      sh:path bamm-c:baseCharacteristic ;
+      sh:class bamm:Characteristic ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "baseCharacteristic" ;
+      sh:description "The Characteristic which is wrapped by the Trait." ;
+   ] ;
+   sh:property [
+      sh:path bamm-c:constraint ;
+      sh:class bamm:Constraint ;
+      sh:minCount 1 ;
+      sh:description "A constraint that is applied to the Characteristic." ;
+   ] .
+
+bamm-c:QuantifiableShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:Quantifiable ;
+   sh:property [
+      sh:path bamm-c:unit ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "Value is not an instance or subclass of unit:Unit" ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?value
+            where {
+               $this bamm-c:unit ?value .
+               filter( not exists { ?value rdf:type/rdfs:subClassOf* unit:Unit } ) .
+            }
+         """
+      ] ;
+      sh:minCount 0 ;
+      sh:maxCount 1 ;
+      sh:name "unit" ;
+      sh:description "The Unit of the Quantifiable." ;
+   ] .
+
+bamm-c:MeasurementShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:Measurement ;
+   sh:property [
+      sh:path bamm-c:unit ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "unit" ;
+      sh:description "The Unit of the Measurement." ;
+   ] .
+
+bamm-c:CollectionShape
+   a sh:NodeShape ;
+   sh:target [
+      a sh:SPARQLTarget ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this
+         where {
+            $this rdfs:subClassOf* bamm-c:Collection .
+         }
+      """
+   ] ;
+   sh:property [
+      sh:path mmm:allowDuplicates ;
+      sh:datatype xsd:boolean ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "The property allowDuplicates must be set for Collections (see focusNode)." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this
+            where {
+              $this rdfs:subClassOf* bamm-c:Collection .
+              filter ( not exists { $this rdfs:subClassOf*/mmm:allowDuplicates [] } ) .
+            }
+         """
+      ] ;
+      sh:maxCount 1 ;
+      sh:name "allowDuplicates" ;
+      sh:description "Ensures that the property allowDuplicates is set at least once for Collections." ;
+   ] ;
+   sh:property [
+      sh:path mmm:ordered ;
+      sh:datatype xsd:boolean ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "The property ordered must be set for Collections (see focusNode)." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this
+            where {
+              $this rdfs:subClassOf* bamm-c:Collection .
+              filter ( not exists { $this rdfs:subClassOf*/mmm:ordered [] } ) .
+            }
+         """
+      ] ;
+      sh:maxCount 1 ;
+      sh:name "ordered" ;
+      sh:description "Ensures that the property ordered is set at least once for Collections." ;
+   ] .
+
+bamm-c:CollectionInstanceShape
+   a sh:NodeShape ;
+   sh:target [
+      a sh:SPARQLTarget ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this
+         where {
+            $this rdf:type/rdfs:subClassOf* bamm-c:Collection .
+         }
+      """
+   ] ;
+   sh:property [
+      sh:path [ sh:alternativePath ( bamm:dataType bamm-c:elementCharacteristic ) ] ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "A Collection must be defined with either a bamm:dataType or a bamm-c:elementCharacteristic (see focusNode)." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this
+            where {
+               $this rdf:type/rdfs:subClassOf* bamm-c:Collection .
+               optional { $this bamm-c:elementCharacteristic ?elementCharacteristic . }
+               filter ( ( not exists { $this bamm:dataType [] } && not exists { $this bamm-c:elementCharacteristic [] } ) ||
+               not exists { ?elementCharacteristic rdf:type/rdfs:subClassOf* bamm:Characteristic }) .
+            }
+         """
+      ] ;
+      sh:maxCount 1 ;
+   ] .
+
+bamm-c:PreventRedefiningCollectionShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:Collection ;
+   sh:property [
+      sh:path mmm:allowDuplicates ;
+      sh:datatype xsd:boolean ;
+      sh:minCount 0 ;
+      sh:maxCount 0;
+      sh:message "Overriding allowDuplicates for Collections is not allowed." ;
+      sh:name "allowDuplicates" ;
+      sh:description "Prevents instances of Collection Characteristics to override the allow duplicates property and hence change the semantics of a Collection." ;
+   ] ;
+   sh:property [
+      sh:path mmm:ordered ;
+      sh:datatype xsd:boolean ;
+      sh:minCount 0 ;
+      sh:maxCount 0;
+      sh:message "Overriding ordered for Collections is not allowed." ;
+      sh:name "ordered" ;
+      sh:description "Prevents instances of Collection Characteristics to override the ordered property and hence change the semantics of a Collection." ;
+   ] .
+
+bamm-c:LanguageConstraintShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:LanguageConstraint ;
+   sh:property [
+      sh:path bamm-c:languageCode ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "languageCode" ;
+      sh:description "An ISO 639-1 language code for the language of the value of the constrained Property"
+   ] .
+
+bamm-c:LocaleConstraintShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:LocaleConstraint ;
+   sh:property [
+      sh:path bamm-c:localeCode ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "localeCode" ;
+      sh:description "An IETF BCP 47 locale code for the language of the value of the constrained Property"
+   ] .
+
+bamm-c:EncodingConstraintShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:EncodingConstraint ;
+   sh:property [
+      sh:path bamm:value ;
+      sh:in ( bamm:US-ASCII bamm:ISO-8859-1 bamm:UTF-8 bamm:UTF-16 bamm:UTF-16BE bamm:UTF-16LE );
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "value" ;
+      sh:description "Constrains the encoding (character set) of a property." ;
+      sh:message "Value must be one of [bamm:US-ASCII bamm:ISO-8859-1 bamm:UTF-8 bamm:UTF-16 bamm:UTF-16BE bamm:UTF-16LE]" ;
+   ] .
+
+bamm-c:LengthConstraintShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:LengthConstraint ;
+   sh:property [
+      sh:path bamm-c:minValue ;
+      sh:datatype xsd:nonNegativeInteger ;
+      sh:maxCount 1 ;
+      sh:name "minValue" ;
+      sh:description "The lower bound of the length constraint." ;
+   ] ;
+   sh:property [
+      sh:path bamm-c:maxValue ;
+      sh:datatype xsd:nonNegativeInteger ;
+      sh:maxCount 1 ;
+      sh:name "maxValue" ;
+      sh:description "The upper bound of the length constraint." ;
+   ] ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+      sh:message "The LengthConstraint must have at least one minValue or maxValue." ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this
+         where {
+           $this rdf:type bamm-c:LengthConstraint .
+           filter( not exists { $this bamm-c:maxValue [] } && not exists { $this bamm-c:minValue [] } )
+         }
+      """
+   ] ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+      sh:message "The LengthConstraint is not applicable to the base Characteristic's data type." ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this ?value
+         where {
+           $this rdf:type bamm-c:LengthConstraint .
+           $this ^bamm-c:constraint/bamm-c:baseCharacteristic*/bamm:dataType ?value .
+           # Length constraints apply to string-alike dataTypes
+           filter( not exists { ?value bamm:hasCharacterValueSpace true }
+           # and collections
+                && not exists { $this ^bamm-c:constraint/bamm-c:baseCharacteristic*/rdf:type/rdfs:subClassOf* bamm-c:Collection } )
+         }
+      """
+   ] ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+      sh:message "The maxValue must be greater or equal than the minValue." ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this ?value
+         where {
+           $this rdf:type bamm-c:LengthConstraint .
+           $this bamm-c:minValue ?minValue .
+           $this bamm-c:maxValue ?maxValue .
+           filter( ?minValue > ?maxValue )
+           bind( concat( "minValue: ", str( ?minValue ), " maxValue: ", str( ?maxValue ) ) as ?value )
+         }
+      """
+   ] .
+
+bamm-c:RegularExpressionConstraintShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:RegularExpressionConstraint ;
+   sh:property [
+      sh:path bamm:value ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "value" ;
+      sh:description "Constrains the lexical value of a property." ;
+      sh:js [
+         a sh:JSConstraint ;
+         sh:message "The RegularExpressionConstraint's value is no valid regular expression." ;
+         sh:jsLibrary bamm:jsValidations ;
+         sh:jsFunctionName "isValidRegularExpression" ;
+      ] ;
+   ] ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+      sh:message "The RegularExpressionConstraint is not applicable to the base Characteristic's data type." ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this ?value
+         where {
+           $this rdf:type bamm-c:RegularExpressionConstraint .
+           $this ^bamm-c:constraint/bamm-c:baseCharacteristic*/bamm:dataType ?value .
+           # Regular expression constraints apply to string-alike dataTypes
+           filter( not exists { ?value bamm:hasCharacterValueSpace true } )
+         }
+      """
+   ] .
+
+bamm-c:RangeShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:RangeConstraint ;
+   sh:property [
+      sh:path bamm-c:minValue ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "The data type of the min value for the Range Constraint (see focus node) is not the data type defined in the base Characteristic." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?baseCharacteristic ?baseCharacteristicDataType
+            where {
+               $this rdf:type bamm-c:RangeConstraint .
+               $this ^bamm-c:constraint/bamm-c:baseCharacteristic*/bamm:dataType ?baseCharacteristicDataType .
+               $this bamm-c:minValue ?minValue .
+               bind( datatype( ?minValue ) as ?minValueDataType ) .
+               filter( ?minValueDataType != ?baseCharacteristicDataType ) .
+            }
+         """
+      ] ;
+      sh:minCount 0 ;
+      sh:maxCount 1 ;
+      sh:name "minValue" ;
+      sh:description "The lower bound of a range." ;
+   ] ;
+   sh:property [
+      sh:path bamm-c:maxValue ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "The data type of the max value for the Range Constraint (see focus node) is not the data type defined in the base Characteristic." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?baseCharacteristic ?baseCharacteristicDataType
+            where {
+               $this rdf:type bamm-c:RangeConstraint .
+               $this ^bamm-c:constraint/bamm-c:baseCharacteristic*/bamm:dataType ?baseCharacteristicDataType .
+               $this bamm-c:maxValue ?maxValue .
+               bind( datatype( ?maxValue ) as ?maxValueDataType ) .
+               filter( ?maxValueDataType != ?baseCharacteristicDataType ) .
+            }
+         """
+      ] ;
+      sh:minCount 0 ;
+      sh:maxCount 1 ;
+      sh:name "maxValue" ;
+      sh:description "The upper bound of a range." ;
+   ] ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+      sh:message "The RangeConstraint must have at least one minValue or maxValue." ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this
+         where {
+           $this rdf:type bamm-c:RangeConstraint .
+           filter( not exists { $this bamm-c:maxValue [] } && not exists { $this bamm-c:minValue [] } )
+         }
+      """
+   ] ;
+   sh:property [
+      sh:path bamm-c:lowerBoundDefinition ;
+      sh:in ( bamm-c:AT_LEAST bamm-c:GREATER_THAN );
+      sh:minCount 0 ;
+      sh:maxCount 1 ;
+      sh:name "lowerBoundDefinition" ;
+      sh:description "The definition of how the lower bound of a range is to be interpreted." ;
+      sh:message "Value must be exactly one of [bamm-c:AT_LEAST, bamm-c:GREATER_THAN]" ;
+   ] ;
+   sh:property [
+      sh:path bamm-c:upperBoundDefinition ;
+      sh:in ( bamm-c:LESS_THAN bamm-c:AT_MOST );
+      sh:minCount 0 ;
+      sh:maxCount 1 ;
+      sh:name "upperBoundDefinition" ;
+      sh:description "The definition of how the upper bound of a range is to be interpreted." ;
+      sh:message "Value must be exactly one of [bamm-c:LESS_THAN, bamm-c:AT_MOST]" ;
+   ] .
+
+bamm-c:StateShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:State ;
+   sh:property [
+      sh:path bamm-c:defaultValue ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "defaultValue" ;
+      sh:description "The default value for this state" ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "Values does not contain the default value." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?defaultValue ?values
+            where {
+               $this bamm-c:values ?values .
+               $this bamm-c:defaultValue ?defaultValue .
+               filter ( not exists {
+                  $this bamm-c:values/rdf:rest*/rdf:first ?defaultValue .
+               } )
+            }
+         """
+      ] ;
+   ] .
+
+bamm-c:DurationShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:Duration ;
+   sh:property [
+      sh:path bamm-c:unit ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "unit" ;
+      sh:description "The Unit in which the Duration is measured." ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "Unit of Duration must have quantity kind time" ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?unit ?value
+            where {
+               $this rdf:type/rdfs:subClassOf* bamm-c:Duration .
+               $this bamm-c:unit ?unit .
+               filter( not exists { ?unit unit:referenceUnit?/unit:quantityKind unit:time } )
+               bind( str( ?unit ) as ?value )
+            }
+         """
+      ]
+   ] .
+
+bamm-c:EnumerationShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:Enumeration ;
+   sh:property [
+     sh:path bamm-c:values ;
+     sh:node dash:ListShape ;
+     sh:minCount 1 ;
+     sh:maxCount 1 ;
+     sh:name "values" ;
+     sh:description "A list of valid states." ;
+     sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "One of the values is not of the specified data type." ;
+        sh:prefixes bamm:prefixDeclarations ;
+        sh:select """
+           select $this ?values ?dataType ?item
+           where {
+             $this rdf:type/rdfs:subClassOf* bamm-c:Enumeration .
+             $this bamm-c:values ?values .
+             $this bamm:dataType ?definedDataType .
+             ?values rdf:rest*/rdf:first ?item .
+             bind( datatype( ?item ) as ?literalDataType ) .
+             bind( strlen( str( ?literalDataType ) ) as ?literalDataTypeLength ) .
+             filter( ( ?literalDataType != ?definedDataType ) && ( ?literalDataTypeLength > 0 ) ) .
+           }
+        """
+     ] ;
+     sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "DataType is a literal type but one of the values is defined as bamm:Property." ;
+        sh:prefixes bamm:prefixDeclarations ;
+        sh:select """
+           select $this ?values ?item
+           where {
+              $this rdf:type/rdfs:subClassOf* bamm-c:Enumeration .
+              filter ( not exists { $this bamm:dataType bamm:Property } ) .
+              $this bamm-c:values ?values .
+              ?values rdf:rest/rdf:first ?item .
+              filter ( exists { ?item rdf:type bamm:Property } )
+           }
+        """
+     ] ;
+   ] .
+
+bamm-c:SingleEntityShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:SingleEntity ;
+   sh:property [
+      sh:path bamm:dataType ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "dataType" ;
+      sh:description "Defines the data type of all Properties which use this Characteristic." ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "The dataType (see value) that is used as dataType on the Characteristic (see focusNode) is not a bamm:Entity." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this $value
+            where {
+               $this bamm:dataType ?value .
+               filter( not exists { ?value rdf:type* bamm:Entity } && not exists { ?value rdf:type* bamm:AbstractEntity } )
+            }
+         """
+      ] ;
+   ] .
+
+bamm-c:EitherShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:Either ;
+   sh:property [
+      sh:path bamm-c:left ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "left" ;
+      sh:description "The Characteristic for the left side value of a disjoint union." ;
+      sh:class bamm:Characteristic ;
+      sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "The Characteristic referenced by the bamm-c:left and bamm-c:right attributes of the Either Characteristic (see focus node) may not be equivalent." ;
+        sh:prefixes bamm:prefixDeclarations ;
+        sh:select """
+           select $this
+           where {
+              # select all Either Characteristics
+              $this rdf:type/rdfs:subClassOf* bamm-c:Either .
+              $this bamm-c:left ?left .
+              $this bamm-c:right ?right .
+              filter ( ?left = ?right ) .
+           }
+        """
+      ] ;
+   ] ;
+   sh:property [
+      sh:path bamm-c:right ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "right" ;
+      sh:description "The Characteristic for the right side value of a disjoint union." ;
+      sh:class bamm:Characteristic ;
+   ] ;
+   sh:property [
+      sh:path bamm:dataType;
+      sh:minCount 0 ;
+      sh:maxCount 0 ;
+      sh:name "dataType" ;
+      sh:description "An Either Characteristic may not define a data type. The data type is set by the Characteristics for the left and right side of the disjoint union." ;
+   ] .
+
+bamm-c:StructuredValueShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:StructuredValue ;
+   sh:js [
+      a sh:JSConstraint ;
+      sh:jsLibrary bamm:jsValidations ;
+      sh:jsFunctionName "testStructuredValueConstruction" ;
+   ] ;
+   sh:property [
+      sh:path bamm-c:deconstructionRule ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "deconstructionRule" ;
+      sh:description "A regular expression that deconstructs a string into groups." ;
+      sh:js [
+         a sh:JSConstraint ;
+         sh:message "The StructuredValue's deconstructionRule is no valid regular expression." ;
+         sh:jsLibrary bamm:jsValidations ;
+         sh:jsFunctionName "isValidRegularExpression" ;
+      ] ;
+   ] ;
+   sh:property [
+      sh:path bamm-c:elements ;
+      sh:node dash:ListShape ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "elements" ;
+      sh:description """List of elements of possibly different types, e.g. ( "literal value" :reference )""" ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "StructuredValue's elements may only be Properties or string literals" ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?value
+            where {
+              $this rdf:type/rdfs:subClassOf* bamm-c:StructuredValue .
+              $this bamm-c:elements ?elements .
+              ?elements rdf:rest*/rdf:first ?element .
+              filter( ( isURI( ?element ) && not exists { ?element a bamm:Property } )
+                 || ( datatype( ?element ) != xsd:string  ) )
+              bind( str( ?element ) as ?value )
+            }
+         """
+      ] ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "StructuredValue's elements may not be empty" ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?value
+            where {
+              $this rdf:type/rdfs:subClassOf* bamm-c:StructuredValue .
+              $this bamm-c:elements ?elements .
+              filter( not exists {
+                ?elements rdf:rest*/rdf:first ?element .
+                filter( ?element != rdf:NIL )
+              } )
+              bind( str( $this ) as ?value )
+            }
+         """
+      ] ;
+   ] ;
+   sh:property [
+      sh:path bamm-c:elements;
+      sh:name "elements" ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "StructuredValue's elements must contain at least one Property" ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?value
+            where {
+              $this rdf:type/rdfs:subClassOf* bamm-c:StructuredValue .
+              $this bamm-c:elements ?elements .
+              filter( not exists {
+                ?elements rdf:rest*/rdf:first ?element .
+                filter( exists { ?element a bamm:Property } )
+              } )
+              {
+                select $this ( group_concat( ?valuePart; separator=" " ) as ?value )
+                where {
+                  $this rdf:type/rdfs:subClassOf* bamm-c:StructuredValue .
+                  $this bamm-c:elements/rdf:rest*/rdf:first ?element .
+                  bind( str( ?element ) as ?valuePart )
+                }
+                group by $this
+              }
+            }
+         """
+      ] ;
+   ] ;
+   sh:property [
+      sh:path bamm-c:elements;
+      sh:name "elements" ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "Properties referred to in StructuredValue's elements must have a Characteristic with a scalar dataType" ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?value
+            where {
+              $this rdf:type/rdfs:subClassOf* bamm-c:StructuredValue .
+              $this bamm-c:elements/rdf:rest*/rdf:first ?value .
+              ?value a bamm:Property .
+              ?value bamm:characteristic/bamm-c:baseCharacteristic*/bamm:dataType ?dataType .
+              filter( !strstarts( str( ?dataType ), str( xsd: ) )
+                     && !strstarts( str( ?dataType ), str( rdf: ) )
+                     && str( ?dataType) != str( bamm:curie ) )
+            }
+         """
+      ] ;
+   ] ;
+   sh:property [
+      sh:path bamm-c:elements;
+      sh:name "elements" ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "This Characteristic may not be used with Properties that appear as elements in a StructuredValue" ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select distinct $this ?value
+            where {
+              $this rdf:type/rdfs:subClassOf* bamm-c:StructuredValue .
+              $this bamm-c:elements/rdf:rest*/rdf:first ?property .
+              ?property a bamm:Property .
+              ?property bamm:characteristic/( bamm-c:baseCharacteristic* | rdfs:subClassOf* )/rdf:type ?value .
+              filter( ?value in( bamm-c:Collection, bamm-c:Set, bamm-c:SortedSet, bamm-c:List, bamm-c:TimeSeries, bamm-c:Either, bamm-c:StructuredValue ) )
+            }
+         """
+      ] ;
+   ] ;
+   sh:property [
+      sh:path bamm:dataType;
+      sh:name "dataType" ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "StructuredValue's dataType must have a string-like value space" ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?value
+            where {
+              $this rdf:type/rdfs:subClassOf* bamm-c:StructuredValue .
+              $this bamm:dataType ?value .
+              filter( not exists { ?value bamm:hasCharacterValueSpace true } )
+            }
+         """
+      ] ;
+   ] .
+
+bamm-c:FixedPointConstraintShape
+   a sh:NodeShape ;
+   sh:targetClass bamm-c:FixedPointConstraint ;
+   sh:property [
+      sh:path bamm-c:scale ;
+      sh:datatype xsd:positiveInteger ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "scale" ;
+      sh:description "The scaling factor for a fixed point number." ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "The Fixed Point Constraint may only be used with Characteristics whose data type is xsd:decimal." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this
+            where {
+               $this rdf:type/rdfs:subClassOf* bamm-c:FixedPointConstraint .
+               $this ^bamm-c:constraint/bamm-c:baseCharacteristic*/bamm:dataType ?dataType .
+               filter( str( ?dataType ) != str( xsd:decimal ) )
+            }
+         """
+      ] ;
+   ] ;
+   sh:property [
+      sh:path bamm-c:integer ;
+      sh:datatype xsd:positiveInteger ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "integer" ;
+      sh:description "The number of integral digits for a fixed point number." ;
+   ] .

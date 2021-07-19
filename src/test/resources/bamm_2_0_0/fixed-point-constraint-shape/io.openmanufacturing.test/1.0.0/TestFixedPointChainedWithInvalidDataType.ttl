@@ -1,0 +1,40 @@
+#
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+# See the AUTHORS file(s) distributed with this work for additional
+# information regarding authorship.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+#
+@prefix : <urn:bamm:io.openmanufacturing.test:1.0.0#> .
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix unit: <urn:bamm:io.openmanufacturing:unit:2.0.0#> .
+
+:TestTrait a bamm-c:Trait ;
+   bamm:name "TestTrait" ;
+   bamm-c:constraint :TestFixedPointChainedWithInvalidDataType ;
+   bamm-c:constraint :Range ;
+   bamm-c:baseCharacteristic :Measurement .
+
+:TestFixedPointChainedWithInvalidDataType a bamm-c:FixedPointConstraint ;
+   bamm:name "TestFixedPointChainedWithInvalidDataType" ;
+   bamm:preferredName "Test Fixed Point"@en ;
+   bamm:description "TestFixedPoint"@en ;
+   bamm-c:scale "5"^^xsd:positiveInteger ;
+   bamm-c:integer "10"^^xsd:positiveInteger .
+
+:Range a bamm-c:RangeConstraint ;
+   bamm:name "TestRange" ;
+   bamm-c:minValue "2.3"^^xsd:float ;
+   bamm-c:maxValue "10.5"^^xsd:float .
+
+:Measurement a bamm-c:Measurement ;
+   bamm:name "Measurement" ;
+   bamm:dataType xsd:float ;
+   bamm-c:unit unit:metrePerSecond .

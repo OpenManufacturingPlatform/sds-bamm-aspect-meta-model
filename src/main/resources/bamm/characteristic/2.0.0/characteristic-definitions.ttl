@@ -1,0 +1,231 @@
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+#  See the AUTHORS file(s) distributed with this work for additional
+#  information regarding authorship.
+#
+#  This Source Code Form is subject to the terms of the Mozilla Public
+#  License, v. 2.0. If a copy of the MPL was not distributed with this
+#  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+
+@prefix mmm: <urn:bamm:io.openmanufacturing:meta-meta-model:2.0.0#> .
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Meta meta model attributes
+mmm:allowDuplicates a rdf:Property ;
+   rdfs:label "allowDuplicates" ;
+   rdfs:label "Allow Duplicates" ;
+   rdfs:comment "Indicates whether a Collection may contain duplicate values."@en .
+
+mmm:ordered a rdf:Property ;
+   rdfs:label "ordered" ;
+   rdfs:label "Ordered" ;
+   rdfs:comment "Indicates whether the values in a Collection are ordered."@en .
+
+# Meta model attributes
+bamm-c:baseCharacteristic a mmm:Attribute ;
+   rdfs:label "baseCharacteristic" ;
+   rdfs:comment "Reference to the Characteristic on which a Constraint is being applied." ;
+   rdfs:range rdfs:Resource .
+
+bamm-c:constraint a mmm:Attribute ;
+   rdfs:label "constraint" ;
+   rdfs:comment "A constraint on a Characteristic" ;
+   rdfs:domain bamm-c:Trait ;
+   rdfs:range bamm:Constraint .
+
+bamm-c:languageCode a mmm:Attribute ;
+   rdfs:label "languageCode" ;
+   rdfs:comment """An ISO 639-1 language code for the language of the value of the constrained Property, e.g. "de".""" ;
+   rdfs:range xsd:string .
+
+bamm-c:localeCode a mmm:Attribute ;
+   rdfs:label "localeCode" ;
+   rdfs:comment """An IETF BCP 47 locale code for the language of the value of the constrained Property, e.g. "de-DE".""" ;
+   rdfs:range xsd:string .
+
+bamm-c:unit a mmm:Attribute ;
+   rdfs:label "unit" ;
+   rdfs:label "Unit" ;
+   rdfs:comment "Reference to a Unit as defined in the Unit catalog."@en .
+
+bamm-c:pieces a rdf:Property ;
+   rdfs:label "pieces" ;
+   rdfs:label "Pieces" .
+
+bamm-c:minValue a rdf:Property ;
+   rdfs:label "minValue" ;
+   rdfs:label "Minimum Value" ;
+   rdfs:comment "The lower bound of a range."@en .
+
+bamm-c:maxValue a rdf:Property ;
+   rdfs:label "maxValue" ;
+   rdfs:label "Maximum Value" ;
+   rdfs:comment "The upper bound of a range."@en .
+
+bamm-c:values a rdf:Property ;
+   rdfs:label "values" ;
+   rdfs:label "Values" ;
+   rdfs:comment """List of possible values of the same type, e.g. ( "up" "down" "degraded" )."""@en .
+
+bamm-c:defaultValue a rdf:Property ;
+   rdfs:label "defaultValue" ;
+   rdfs:label "Default Value" ;
+   rdfs:comment "The default value for the state."@en .
+
+bamm-c:left a rdf:Property ;
+   rdfs:label "left" ;
+   rdfs:label "Left" ;
+   rdfs:comment "The left side of the Either. The attribute references another Characteristic which describes the value."@en .
+
+bamm-c:right a rdf:Property ;
+   rdfs:label "right" ;
+   rdfs:label "Right" ;
+   rdfs:comment "The right side of the Either. The attribute references another Characteristic which describes the value."@en .
+
+bamm-c:lowerBoundDefinition a rdf:Property ;
+   rdfs:label "lowerBoundDefinition" ;
+   rdfs:label "Lower Bound Definition" ;
+   rdfs:comment """Defines how the "minValue" property of the Range Constraint is to be interpreted. Possible values are "AT_LEAST" and "GREATER_THAN". This is an optional property. By default the "minValue" is interpreted with "AT_LEAST" semantics."""@en .
+
+bamm-c:upperBoundDefinition a rdf:Property ;
+   rdfs:label "upperBoundDefinition" ;
+   rdfs:label "Upper Bound Definition" ;
+   rdfs:comment """Defines how the "maxValue" property of the Range Constraint is to be interpreted. Possible values are "LESS_THAN" and "AT_MOST". This is an optional property. By default the "maxValue" is interpreted with "AT_MOST" semantics"""@en .
+
+bamm-c:elements a rdf:Property ;
+   rdfs:label "elements" ;
+   rdfs:comment """List of elements of possibly different types, e.g. ( "literal value" :reference )"""@en .
+
+bamm-c:deconstructionRule a rdf:Property ;
+   rdfs:label "deconstructionRule" ;
+   rdfs:label "Deconstruction Rule" ;
+   rdfs:comment "A regular expression that defines the groups contained in a string."@en .
+
+bamm-c:scale a rdf:Property ;
+   rdfs:label "scale" ;
+   rdfs:label "Scale" ;
+   rdfs:comment "The scaling factor for a fixed point number."@en .
+
+bamm-c:integer a rdf:Property ;
+   rdfs:label "integer" ;
+   rdfs:label "Integer" ;
+   rdfs:comment "The number of integral digits for a fixed point number."@en .
+
+bamm-c:elementCharacteristic a rdf:Property ;
+   rdfs:label "elementCharacteristic" ;
+   rdfs:label "Element Characteristic" ;
+   rdfs:comment "The Characteristic which defines the elements in a Collection."@en .
+
+# Characteristics
+bamm-c:Trait rdfs:subClassOf bamm:Characteristic ;
+   rdfs:label "Trait" ;
+   rdfs:comment "A trait wraps another characteristic and adds a number of additional Constraints."@en .
+
+bamm-c:Quantifiable rdfs:subClassOf bamm:Characteristic ;
+   rdfs:label "Quantifiable" ;
+   rdfs:comment "A value which can be quantified and may have a unit, e.g. the number of bolts required for a processing step or the expected torque with which these bolts should be tightened."@en .
+
+bamm-c:Measurement rdfs:subClassOf bamm-c:Quantifiable ;
+   rdfs:label "Measurement" ;
+   rdfs:comment "A measurement is a numeric value with an associated unit and quantity kind."@en .
+
+bamm-c:Duration rdfs:subClassOf bamm-c:Quantifiable ;
+   rdfs:label "Duration" ;
+   rdfs:comment "A time duration."@en .
+
+bamm-c:SingleEntity rdfs:subClassOf bamm:Characteristic ;
+   rdfs:label "SingleEntity" ;
+   rdfs:comment "Describes a Property whose data type is an Entity. The Entity used as data type may be defined in the same Aspect Model or the shared Entity namespace of the BAMM."@en .
+
+bamm-c:Collection rdfs:subClassOf bamm:Characteristic ;
+   rdfs:label "Collection" ;
+   rdfs:comment "A group of values which may be either of a simple or complex type. The values may be duplicated and are not ordered (i.e. bag semantics)."@en ;
+   mmm:allowDuplicates true ;
+   mmm:ordered false .
+
+bamm-c:Set rdfs:subClassOf bamm-c:Collection ;
+   rdfs:label "Set" ;
+   rdfs:comment "A subclass of Collection which may not contain duplicates and is unordered."@en ;
+   mmm:allowDuplicates false ;
+   mmm:ordered false .
+
+bamm-c:SortedSet rdfs:subClassOf bamm-c:Collection ;
+   rdfs:label "SortedSet" ;
+   rdfs:comment "A subclass of Collection which may not contain duplicates and is ordered."@en ;
+   mmm:allowDuplicates false ;
+   mmm:ordered true .
+
+bamm-c:List rdfs:subClassOf bamm-c:Collection ;
+   rdfs:label "List" ;
+   rdfs:comment "A subclass of Collection which may contain duplicates and is ordered."@en ;
+   mmm:allowDuplicates true ;
+   mmm:ordered true .
+
+bamm-c:TimeSeries rdfs:subClassOf bamm-c:SortedSet ;
+   rdfs:label "TimeSeries" ;
+   rdfs:comment "A subclass of Sorted Set containing values with the exact point in time when the values where recorded. The values for the allowDuplicates and ordered attributes are inherited from the Sorted Set."@en ;
+   bamm:dataType bamm-e:TimeSeriesEntity .
+
+bamm-c:Enumeration rdfs:subClassOf bamm:Characteristic ;
+   rdfs:label "Enumeration" ;
+   rdfs:comment "An enumeration represents a list of possible values."@en .
+
+bamm-c:State rdfs:subClassOf bamm-c:Enumeration ;
+   rdfs:label "State" ;
+   rdfs:comment "A state is subclass of Enumeration with a default value."@en .
+
+bamm-c:Code rdfs:subClassOf bamm:Characteristic ;
+   rdfs:label "Code" ;
+   rdfs:comment "Describes a Property which contains any kind of code. Note that this Characteristic does not define a bamm:dataType, this must therefore be done when instantiating the Characteristic."@en .
+
+bamm-c:Either rdfs:subClassOf bamm:Characteristic ;
+   rdfs:label "Either" ;
+   rdfs:comment "Describes a Property whose value can have one of two possible types (a disjoint union)."@en .
+
+bamm-c:StructuredValue rdfs:subClassOf bamm:Characteristic ;
+   rdfs:label "StructuredValue" ;
+   rdfs:comment "Describes how the value of a Property is structured from parts."@en .
+
+# Constraints
+bamm-c:RangeConstraint rdfs:subClassOf bamm:Constraint ;
+   rdfs:label "RangeConstraint" ;
+   rdfs:comment "Restricts the value range of a Property. At least one of bamm-c:maxValue or bamm-c:minValue must be present in a Range Constraint. Both bamm-c:maxValue and bamm-c:minValue are inclusive."@en .
+
+bamm-c:LanguageConstraint rdfs:subClassOf bamm:Constraint ;
+   rdfs:label "LanguageConstraint" ;
+   rdfs:comment "Restricts a value to a specific language."@en .
+
+bamm-c:LocaleConstraint rdfs:subClassOf bamm:Constraint ;
+   rdfs:label "LocaleConstraint" ;
+   rdfs:comment "Restricts a value to a specific locale."@en .
+
+bamm-c:EncodingConstraint rdfs:subClassOf bamm:Constraint ;
+   rdfs:label "EncodingConstraint" ;
+   rdfs:comment "Restricts the encoding of a Property."@en .
+
+bamm-c:LengthConstraint rdfs:subClassOf bamm:Constraint ;
+   rdfs:label "LengthConstraint" ;
+   rdfs:comment """
+      This Constraint can be used to restrict two types of Characteristics:
+
+      - Characteristics that have a character value space, i.e. whose value are string-like. In this case the Constraint restricts the length of the (string-) value. The scalar data types that can be restricted are: xsd:string, xsd:date, xsd:time, xsd:dateTime, xsd:dateTimeStamp, xsd:gYear, xsd:gMonth, xsd:gMonthDay, xsd:duration, xsd:yearMonthDuration, xsd:dayTimeDuration, xsd:hexBinary, xsd:base64Binary, xsd:anyURI, bamm:curie and rdf:langString.
+      - Collection Characteristics (Collection, Set, Sorted Set, List). In this case the Constraint restricts the number of elements in the collection.
+
+      At least one of bamm-c:maxValue or bamm-c:minValue must be present in a Length Constraint.
+   """@en .
+
+bamm-c:RegularExpressionConstraint rdfs:subClassOf bamm:Constraint ;
+   rdfs:label "RegularExpressionConstraint" ;
+   rdfs:comment "Restricts a string value to a regular expression as defined by XQuery 1.0 and XPath 2.0 Functions and Operators."@en ;
+   bamm:see <http://www.w3.org/TR/xpath-functions/#regex-syntax> .
+
+bamm-c:FixedPointConstraint rdfs:subClassOf bamm:Constraint ;
+   rdfs:label "FixedPoint" ;
+   rdfs:comment "Defines the scaling factor for a fixed point number."@en .

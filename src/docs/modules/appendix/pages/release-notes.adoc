@@ -14,6 +14,13 @@ SPDX-License-Identifier: MPL-2.0
 [[release-notes]]
 == Release Notes - {meta-model-full-name}
 
+[[bamm-2.0.0]]
+=== Release 2.0.0
+
+- Introduces Entity inheritance. The new *Abstract Entity* Meta Model Element and *extends* attribute may be used to
+define a hierarchy of Entities in an Aspect Model. The concept of extending an Entity replaces the existing concept of
+refining an Entity.
+
 [[bamm-1.0.0]]
 === Release 1.0.0
 

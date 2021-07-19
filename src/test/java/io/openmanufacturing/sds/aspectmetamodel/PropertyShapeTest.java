@@ -112,7 +112,7 @@ public class PropertyShapeTest extends AbstractShapeTest {
    }
 
    @ParameterizedTest
-   @MethodSource( value = "allVersions" )
+   @MethodSource( value = "versionsUpToIncluding1_0_0" )
    public void testExampleValueOnPropertyWithUndefinedCharacteristicExpectFailure(
          final KnownVersion metaModelVersion ) {
       final BammUrns bammUrns = new BammUrns( metaModelVersion );
@@ -131,7 +131,7 @@ public class PropertyShapeTest extends AbstractShapeTest {
    }
 
    @ParameterizedTest
-   @MethodSource( value = "allVersions" )
+   @MethodSource( value = "versionsUpToIncluding1_0_0" )
    public void testRefinePropertyWithCharacteristicExpectFailure( final KnownVersion metaModelVersion ) {
       final BammUrns bammUrns = new BammUrns( metaModelVersion );
 
@@ -143,7 +143,7 @@ public class PropertyShapeTest extends AbstractShapeTest {
    }
 
    @ParameterizedTest
-   @MethodSource( value = "allVersions" )
+   @MethodSource( value = "versionsUpToIncluding1_0_0" )
    public void testUnrefinedPropertyWithoutCharacteristicExpectFailure( final KnownVersion metaModelVersion ) {
       final BammUrns bammUrns = new BammUrns( metaModelVersion );
 

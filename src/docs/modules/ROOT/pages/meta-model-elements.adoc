@@ -20,7 +20,9 @@ image::aspect-meta-model.svg[width=100%]
 
 * A _Property_ represents a named value.
 
-* An _Entity_ is a logical encapsulation of multiple values. It has a number of Properties.
+* An _Abstract Entity_ is a logical encapsulation of a shared concept. It has a number of Properties. An _Abstract Entity_ can extend another _Abstract Entity_.
+
+* An _Entity_ is a logical encapsulation of multiple values. It has a number of Properties. An _Entity_ can extend either another _Entity_ or an _Abstract Entity_.
 
 * A _Characteristic_ describes a Property's meaning in the context of the Aspect with information
   such as its data type, if it is a collection, that a string value is to be interpreted as one of a

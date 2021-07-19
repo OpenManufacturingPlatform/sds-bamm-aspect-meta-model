@@ -1,7 +1,7 @@
 ////
 Copyright (c) 2020 Robert Bosch Manufacturing Solutions GmbH
 
-See the AUTHORS file(s) distributed with this work for additional information regarding authorship. 
+See the AUTHORS file(s) distributed with this work for additional information regarding authorship.
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/
@@ -22,15 +22,16 @@ include::diagram-style.dot[]
   Aspect [label="{ «Aspect»|name : string\lpreferredName : langString [0..n]\ldescription : langString [0..n]\lsee : anyURI [0..n]\l}", pos="0,0.38!"]
   Property [label="{ «Property»|name : string\lpreferredName : langString [0..n]\ldescription : langString [0..n]\lexampleValue : \<type\> [0..1]\lsee : anyURI [0..n]\l}", pos="0,-1.30!"]
   Entity [label="{ «Entity»|name : string\lpreferredName : langString [0..n]\ldescription : langString [0..n]\lsee : anyURI [0..n]\l}", pos="0,-2.9!"]
-  Operation [label="{ «Operation»|name : string\lpreferredName : langString [0..n]\ldescription : langString [0..n]\lsee : anyURI [0..n]\l}", pos="0,-4.5!"]
-  Event [label="{ «Event»|name : string\lpreferredName : langString [0..n]\ldescription : langString [0..n]\lsee : anyURI [0..n]\l}", pos="0,-6!"]
+  AbstractEntity [label="{ «AbstractEntity»|name : string\lpreferredName : langString [0..n]\ldescription : langString [0..n]\lsee : anyURI [0..n]\l}", pos="0,-4.5!"]
+  Operation [label="{ «Operation»|name : string\lpreferredName : langString [0..n]\ldescription : langString [0..n]\lsee : anyURI [0..n]\l}", pos="0,-6.0!"]
+  Event [label="{ «Event»|name : string\lpreferredName : langString [0..n]\ldescription : langString [0..n]\lsee : anyURI [0..n]\l}", pos="0,-7.5!"]
 
-  Trait [label="{ «Trait»}", pos="4.5,-0.07!"]
-  Constraint [label="{ «Constraint»}", pos="4.5,0.7!"]
-  Characteristic [label="{ «Characteristic»|name : string\lpreferredName : langString [0..n]\ldescription : langString [0..n]\lsee : anyURI [0..n]\ldataType : \<type\>\l}", pos="4.5,-1.6!"]
-  Quantifiable [label="{ «Quantifiable»}", pos="4.5,-2.8!"]
-  Unit [label="{ «Unit»|name : string\lpreferredName : langString [0..n]\ldescription : langString [0..n]\lsee : anyURI [0..n]\lsymbol : string\lconversionFactor : string [0..1]\lnumericConversionFactor : double [0..1]\lcommonCode : string [0..1]\l}", pos="4.5,-4.2!"]
-  QuantityKind [label="{ «QuantityKind»|name : string\lpreferredName : langString [0..n]\ldescription : langString [0..n]\lsee : anyURI [0..n]\l}", pos="4.5,-6.3!"]
+  Trait [label="{ «Trait»}", pos="5.0,-0.07!"]
+  Constraint [label="{ «Constraint»}", pos="5.0,0.7!"]
+  Characteristic [label="{ «Characteristic»|name : string\lpreferredName : langString [0..n]\ldescription : langString [0..n]\lsee : anyURI [0..n]\ldataType : \<type\>\l}", pos="5.0,-1.6!"]
+  Quantifiable [label="{ «Quantifiable»}", pos="5.0,-2.8!"]
+  Unit [label="{ «Unit»|name : string\lpreferredName : langString [0..n]\ldescription : langString [0..n]\lsee : anyURI [0..n]\lsymbol : string\lconversionFactor : string [0..1]\lnumericConversionFactor : double [0..1]\lcommonCode : string [0..1]\l}", pos="5.0,-4.2!"]
+  QuantityKind [label="{ «QuantityKind»|name : string\lpreferredName : langString [0..n]\ldescription : langString [0..n]\lsee : anyURI [0..n]\l}", pos="5.0,-6.3!"]
 
   // Quantifiable --|> Characteristic
   Quantifiable -> Characteristic [arrowhead="empty"]
@@ -48,106 +49,138 @@ include::diagram-style.dot[]
   help3 [shape="point", pos="-2,-1.8!", label="", height=0.0, width=0.0]
   property_west2 [shape="point", pos="-1.6,-1.8!", label="", height=0.0, width=0.0]
   property_west2 -> help3 [arrowhead="none", label="", taillabel="0..1"]
-  help4 [shape="point", pos="-2,-4.2!", label="", height=0.0, width=0.0]
+  help4 [shape="point", pos="-2,-5.7!", label="", height=0.0, width=0.0]
   help3 -> help4 [arrowhead="none"]
-  operation_west1 [shape="point", pos="-1.6,-4.2!", label="", height=0.0, width=0.0]
+  operation_west1 [shape="point", pos="-1.6,-5.7!", label="", height=0.0, width=0.0]
   help4 -> operation_west1 [arrowhead="ediamond"]
 
   // Property --[input]--> Operation
   help5 [shape="point", pos="-2.5,-1.5!", label="", height=0.0, width=0.0]
   property_west3 [shape="point", pos="-1.6,-1.5!", label="", height=0.0, width=0.0]
   property_west3 -> help5 [arrowhead="none", label="", taillabel="*"]
-  help6 [shape="point", pos="-2.5,-4.5!", label="", height=0.0, width=0.0]
+  help6 [shape="point", pos="-2.5,-6!", label="", height=0.0, width=0.0]
   help5 -> help6 [arrowhead="none"]
-  operation_west2 [shape="point", pos="-1.6,-4.5!", label="", height=0.0, width=0.0]
+  operation_west2 [shape="point", pos="-1.6,-6!", label="", height=0.0, width=0.0]
   help6 -> operation_west2 [arrowhead="ediamond"]
 
   // Aspect --[operations]--> Operation
   help7 [shape="point", pos="-2.9,0.3!", label="", height=0.0, width=0.0]
   aspect_west2 [shape="point", pos="-1.6,0.3!", label="", height=0.0, width=0.0]
   aspect_west2 -> help7 [arrowhead="none", label="", dir="both", arrowtail="ediamond"]
-  help8 [shape="point", pos="-2.9,-4.8!", label="", height=0.0, width=0.0]
+  help8 [shape="point", pos="-2.9,-6.3!", label="", height=0.0, width=0.0]
   help7 -> help8 [arrowhead="none"]
-  operation_west3 [shape="point", pos="-1.6,-4.8!", label="", height=0.0, width=0.0]
+  operation_west3 [shape="point", pos="-1.6,-6.3!", label="", height=0.0, width=0.0]
   help8 -> operation_west3 [arrowhead="none", headlabel="*"]
 
   // Aspect --[events]--> Event
   help_event_aspect_aspect_out [shape="point", pos="-3.3,0.6!", label="", height=0.0, width=0.0]
   aspect_west3 [shape="point", pos="-1.6,0.6!", label="", height=0.0, width=0.0]
   aspect_west3 -> help_event_aspect_aspect_out [arrowhead="none", label="", dir="both", arrowtail="ediamond"]
-  help_event_aspect_event_out [shape="point", pos="-3.3,-6!", label="", height=0.0, width=0.0]
+  help_event_aspect_event_out [shape="point", pos="-3.3,-7.5!", label="", height=0.0, width=0.0]
   help_event_aspect_event_out -> help_event_aspect_aspect_out [arrowhead="none"]
-  event_west [shape="point", pos="-1.6,-6!", label="", height=0.0, width=0.0]
+  event_west [shape="point", pos="-1.6,-7.5!", label="", height=0.0, width=0.0]
   event_west -> help_event_aspect_event_out [arrowhead="none", label="", taillabel="*"]
 
   // Event --[parameters]--> Property
   event_east [shape="point", pos="1.6,-6!", label="", height=0.0, width=0.0]
-  help_event_property_event_out [shape="point", pos="2.3,-6!", label="", height=0.0, width=0.0]
+  help_event_property_event_out [shape="point", pos="2.6,-6!", label="", height=0.0, width=0.0]
   event_east -> help_event_property_event_out [arrowhead="none", label="", dir="both", arrowtail="ediamond"]
   property_east3 [shape="point", pos="1.6,-1.4!", label="", height=0.0, width=0.0]
-  help_event_property_property_out [shape="point", pos="2.3,-1.4!", label="", height=0.0, width=0.0]
+  help_event_property_property_out [shape="point", pos="2.6,-1.4!", label="", height=0.0, width=0.0]
   help_event_property_property_out -> help_event_property_event_out [arrowhead="none"]
   property_east3 -> help_event_property_property_out [arrowhead="none", label="", taillabel="*"]
 
   // Property --[characteristic]--> Characteristic
   property_east1 [shape="point", pos="1.6,-1.1!", label="", height=0.0, width=0.0]
-  characteristic_west1 [shape="point", pos="2.9,-1.1!", label="", height=0.0, width=0.0]
+  characteristic_west1 [shape="point", pos="3.4,-1.1!", label="", height=0.0, width=0.0]
   property_east1 -> characteristic_west1 [dir="both", arrowhead="none", arrowtail="ediamond", headlabel="1"]
 
   // Trait --|> Characteristic
-  trait_south1 [shape="point", pos="3.5,-0.33!", label="", height=0.0, width=0.0]
-  characteristic_north1 [shape="point", pos="3.5,-0.93!", label="", height=0.0, width=0.0]
+  trait_south1 [shape="point", pos="4.0,-0.33!", label="", height=0.0, width=0.0]
+  characteristic_north1 [shape="point", pos="4.0,-0.93!", label="", height=0.0, width=0.0]
   trait_south1 -> characteristic_north1 [arrowhead="empty"]
 
   // Trait --[baseCharacteristic]--> Characteristic
-  trait_south2 [shape="point", pos="5.5,-0.33!", label="", height=0.0, width=0.0]
-  characteristic_north2 [shape="point", pos="5.5,-0.93!", label="", height=0.0, width=0.0]
+  trait_south2 [shape="point", pos="6.0,-0.33!", label="", height=0.0, width=0.0]
+  characteristic_north2 [shape="point", pos="6.0,-0.93!", label="", height=0.0, width=0.0]
   trait_south2 -> characteristic_north2 [dir="both", arrowhead="none", arrowtail="ediamond", headlabel="1"]
 
   // Trait --[constraint]--> Constraint
-  trait_west1 [shape="point", pos="2.9,-0.05!", label="", height=0.0, width=0.0]
-  help19 [shape="point", pos="2.6,-0.05!", label="", height=0.0, width=0.0]
-  constraint_west1 [shape="point", pos="2.9,0.7!", label="", height=0.0, width=0.0]
-  help20 [shape="point", pos="2.6,0.7!", label="", height=0.0, width=0.0]
+  trait_west1 [shape="point", pos="3.4,-0.05!", label="", height=0.0, width=0.0]
+  help19 [shape="point", pos="3.1,-0.05!", label="", height=0.0, width=0.0]
+  constraint_west1 [shape="point", pos="3.4,0.7!", label="", height=0.0, width=0.0]
+  help20 [shape="point", pos="3.1,0.7!", label="", height=0.0, width=0.0]
   trait_west1 -> help19 [dir="both", arrowhead="none", arrowtail="ediamond"]
   help19 -> help20 [arrowhead="none"]
   help20 -> constraint_west1 [arrowhead="none", headlabel="*"]
 
   // Quantifiable --[unit]--> Unit
-  quantifiable_west1 [shape="point", pos="2.9,-2.7!", label="", height=0.0, width=0.0]
-  help11 [shape="point", pos="2.6,-2.7!", label="", height=0.0, width=0.0]
-  unit_west1 [shape="point", pos="2.9,-3.7!", label="", height=0.0, width=0.0]
-  help12 [shape="point", pos="2.6,-3.7!", label="", height=0.0, width=0.0]
+  quantifiable_west1 [shape="point", pos="3.4,-2.7!", label="", height=0.0, width=0.0]
+  help11 [shape="point", pos="3.1,-2.7!", label="", height=0.0, width=0.0]
+  unit_west1 [shape="point", pos="3.4,-3.7!", label="", height=0.0, width=0.0]
+  help12 [shape="point", pos="3.1,-3.7!", label="", height=0.0, width=0.0]
   quantifiable_west1 -> help11 [dir="both", arrowhead="none", arrowtail="ediamond"]
   help11 -> help12 [arrowhead="none"]
   help12 -> unit_west1 [arrowhead="none", headlabel="1"]
 
   // Entity --[properties]--> Property
-  property_east2 [shape="point", pos="1.6,-1.7!", label="", height=0.0, width=0.0]
-  help13 [shape="point", pos="2.0,-1.7!", label="", height=0.0, width=0.0]
+  property_east2 [shape="point", pos="1.6,-1.9!", label="", height=0.0, width=0.0]
+  help13 [shape="point", pos="1.8,-1.9!", label="", height=0.0, width=0.0]
   entity_east1 [shape="point", pos="1.6,-2.9!", label="", height=0.0, width=0.0]
-  help14 [shape="point", pos="2.0,-2.9!", label="", height=0.0, width=0.0]
+  help14 [shape="point", pos="1.8,-2.9!", label="", height=0.0, width=0.0]
   property_east2 -> help13 [arrowhead="none", taillabel="*"]
   help13 -> help14 [arrowhead="none"]
   help14 -> entity_east1 [arrowhead="ediamond"]
 
   // Unit --[quantityKind]--> QuantityKind
-  unit_west2 [shape="point", pos="2.9,-4.3!", label="", height=0.0, width=0.0]
-  quantitykind_west1 [shape="point", pos="2.9,-6.0!", label="", height=0.0, width=0.0]
-  help15 [shape="point", pos="2.6,-4.3!", label="", height=0.0, width=0.0]
-  help16 [shape="point", pos="2.6,-6.0!", label="", height=0.0, width=0.0]
+  unit_west2 [shape="point", pos="3.4,-4.3!", label="", height=0.0, width=0.0]
+  quantitykind_west1 [shape="point", pos="3.4,-6.0!", label="", height=0.0, width=0.0]
+  help15 [shape="point", pos="3.1,-4.3!", label="", height=0.0, width=0.0]
+  help16 [shape="point", pos="3.1,-6.0!", label="", height=0.0, width=0.0]
   unit_west2 -> help15 [dir="both", arrowhead="none", arrowtail="ediamond"]
   help15 -> help16 [arrowhead="none"]
   help16 -> quantitykind_west1 [arrowhead="none", headlabel="*"]
 
   // Unit --[referenceUnit]--> Unit
-  unit_south1 [shape="point", pos="3.5,-5.15!", label="", height=0.0, width=0.0]
-  unit_south2 [shape="point", pos="5.5,-5.15!", label="", height=0.0, width=0.0]
-  help17 [shape="point", pos="3.5,-5.4!", label="", height=0.0, width=0.0]
-  help18 [shape="point", pos="5.5,-5.4!", label="", height=0.0, width=0.0]
+  unit_south1 [shape="point", pos="4.0,-5.15!", label="", height=0.0, width=0.0]
+  unit_south2 [shape="point", pos="6.0,-5.15!", label="", height=0.0, width=0.0]
+  help17 [shape="point", pos="4.0,-5.4!", label="", height=0.0, width=0.0]
+  help18 [shape="point", pos="6.0,-5.4!", label="", height=0.0, width=0.0]
   unit_south1 -> help17 [dir="both", arrowhead="none", arrowtail="ediamond"]
   help17 -> help18 [arrowhead="none"]
   help18 -> unit_south2 [arrowhead="none", headlabel="0..1"]
+
+  //AbstractEntity --[properties]--> Property
+  property_east4 [shape="point", pos="1.6,-1.7!", label="", height=0.0, width=0.0]
+  help21 [shape="point", pos="2.3,-1.7!", label="", height=0.0, width=0.0]
+  abstract_entity_east1 [shape="point", pos="1.6,-4.5!", label="", height=0.0, width=0.0]
+  help22 [shape="point", pos="2.3,-4.5!", label="", height=0.0, width=0.0]
+  property_east4 -> help21 [arrowhead="none", taillabel="*"]
+  help21 -> help22 [arrowhead="none"]
+  help22 -> abstract_entity_east1 [arrowhead="ediamond"]
+
+  // Entity --[extends]--> AbstractEntity
+  entity_south1 [shape="point", pos="-1,-3.46!", label="", height=0.0, width=0.0]
+  abstract_entity_north1 [shape="point", pos="-1,-3.95!", label="", height=0.0, width=0.0]
+  entity_south1 -> abstract_entity_north1 [arrowhead="none", label="0..1"]
+
+  // Entity --[extends]--> Entity
+  entity_south2 [shape="point", pos="0,-3.46!", label="", height=0.0, width=0.0]
+  entity_south3 [shape="point", pos="1.3,-3.46!", label="", height=0.0, width=0.0]
+  help23 [shape="point", pos="0,-3.7!", label="", height=0.0, width=0.0]
+  help24 [shape="point", pos="1.3,-3.7!", label="", height=0.0, width=0.0]
+  entity_south2 -> help23 [arrowhead="none", label="0..1"]
+  entity_south3 -> help24 [arrowhead="none"]
+  help23 -> help24 [arrowhead="none"]
+
+  // Abstract Entity --[extends]--> Abstract Entity
+  abstract_entity_south1 [shape="point", pos="0,-5.05!", label="", height=0.0, width=0.0]
+  abstract_entity_south2 [shape="point", pos="1.3,-5.05!", label="", height=0.0, width=0.0]
+  help25 [shape="point", pos="0,-5.3!", label="", height=0.0, width=0.0]
+  help26 [shape="point", pos="1.3,-5.3!", label="", height=0.0, width=0.0]
+  abstract_entity_south1 -> help25 [arrowhead="none", label="0..1"]
+  abstract_entity_south2 -> help26 [arrowhead="none"]
+  help25 -> help26 [arrowhead="none"]
 
   // Edge labels
   properties_label1 [label="properties", pos="-2.5,-0.6!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
@@ -155,14 +188,18 @@ include::diagram-style.dot[]
   output_label [label="output", pos="-2,-3.2!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
   operations_label [label="operations", pos="-2.9,-2.4!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
   events_label [label="events", pos="-3.2,-4.0!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
-  parameters_label [label="parameters", pos="2.1,-5!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
-  characteristic_label [label="characteristic", pos="2.3,-1.1!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.8, height=0.2, fixedsize=true]
+  parameters_label [label="parameters", pos="2.6,-5!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
+  characteristic_label [label="characteristic", pos="2.8,-1.1!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.8, height=0.2, fixedsize=true]
   baseCharacteristic_label [label="baseCharacteristic", pos="5.5,-0.65!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
-  unit_label [label="unit", pos="2.6,-3.2!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
-  properties_label2 [label="properties", pos="1.9,-2.15!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
-  quantityKind_label2 [label="quantityKind", pos="2.8,-5.4!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
+  unit_label [label="unit", pos="3.1,-3.2!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
+  properties_label2 [label="properties", pos="1.8,-2.15!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
+  quantityKind_label2 [label="quantityKind", pos="3.2,-5.4!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
   referenceUnit_label2 [label="referenceUnit", pos="4.6,-5.4!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.7, height=0.2, fixedsize=true]
-  constraint_label [label="constraint", pos="2.5,0.35!", color="white", fillcolor="white", fontsize=9, shape="box", width="0.7", height="0.2", fixedsize=true]
+  constraint_label [label="constraint", pos="3.0,0.35!", color="white", fillcolor="white", fontsize=9, shape="box", width="0.7", height="0.2", fixedsize=true]
+ properties_label3 [label="properties", pos="2.2,-4.15!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
+ extends_label1 [label="extends", pos="-0.8,-3.8!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
+ extends_label2 [label="extends", pos="0.65,-3.7!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
+ extends_label3 [label="extends", pos="0.65,-5.3!", color="white", fillcolor="white", fontsize=9, shape="box", width=0.5, height=0.2, fixedsize=true]
 
 }
 ----

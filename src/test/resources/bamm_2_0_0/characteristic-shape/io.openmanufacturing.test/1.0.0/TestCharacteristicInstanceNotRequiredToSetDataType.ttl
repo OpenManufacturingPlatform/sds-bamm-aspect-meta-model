@@ -1,0 +1,27 @@
+#
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+# See the AUTHORS file(s) distributed with this work for additional
+# information regarding authorship.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+#
+@prefix : <urn:bamm:io.openmanufacturing.test:1.0.0#> .
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:TestCharacteristicInstanceNotRequiredToSetDataType a :CharacteristicWithDataType ;
+   bamm:name "TestCharacteristicInstanceNotRequiredToSetDataType" ;
+   bamm:preferredName "Test Characteristic Instance"@en ;
+   bamm:description "Test Characteristic Instance"@en .
+
+:CharacteristicWithDataType rdfs:subClassOf bamm:Characteristic ;
+   bamm:name "CharacteristicWithDataType" ;
+   bamm:preferredName "Test Characteristic Instance"@en ;
+   bamm:description "Test Characteristic Instance"@en ;
+   bamm:dataType xsd:double .

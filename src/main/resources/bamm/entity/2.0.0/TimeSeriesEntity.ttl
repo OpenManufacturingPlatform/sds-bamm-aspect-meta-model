@@ -1,0 +1,27 @@
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+#  See the AUTHORS file(s) distributed with this work for additional
+#  information regarding authorship.
+#
+#  This Source Code Form is subject to the terms of the Mozilla Public
+#  License, v. 2.0. If a copy of the MPL was not distributed with this
+#  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#> .
+
+bamm-e:TimeSeriesEntity a bamm:AbstractEntity ;
+   bamm:name "TimeSeriesEntity" ;
+   bamm:preferredName "Time Series Entity"@en ;
+   bamm:description "An Entity which represents a key/value pair. The key is the timestamp when the value was recorded and the value is the value which was recorded."@en ;
+   bamm:properties ( bamm-e:timestamp ) ;
+   bamm:see <https://openmanufacturingplatform.github.io/sds-bamm-aspect-meta-model/bamm-specification/v1.0.0/entities.html#time-series-entity> .
+
+bamm-e:timestamp a bamm:Property ;
+   bamm:name "timestamp" ;
+   bamm:preferredName "Timestamp"@en ;
+   bamm:description "The specific point in time when the corresponding value was recorded."@en ;
+   bamm:characteristic bamm-c:Timestamp .

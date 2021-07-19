@@ -46,6 +46,7 @@ public class BammUrns {
    final String structuredValue;
    final String scale;
    final String integer;
+   final String extendsUrn;
 
    BammUrns( final KnownVersion testedBammVersion ) {
       final String META_META_MODEL_URN = "urn:bamm:io.openmanufacturing:meta-meta-model:%s#";
@@ -91,5 +92,6 @@ public class BammUrns {
       localeCodeUrn = String.format( CHARACTERISTICS_URN + "localeCode", testedBammVersion.toVersionString() );
       baseCharacteristicUrn = String
             .format( CHARACTERISTICS_URN + "baseCharacteristic", testedBammVersion.toVersionString() );
+      extendsUrn = String.format( META_MODEL_URN + "extends", testedBammVersion.toVersionString() );
    }
 }

@@ -51,12 +51,16 @@ public abstract class AbstractShapeTest {
       return allVersions().takeWhile( v -> version.isNewerThan( v ) || v.equals( version ) );
    }
 
-   protected static Stream<KnownVersion> versionsAsOf( final KnownVersion version ) {
+   protected static Stream<KnownVersion> versionsStartingWith( final KnownVersion version ) {
       return allVersions().dropWhile( version::isNewerThan );
    }
 
-   protected static Stream<KnownVersion> versionsAsOf1_0_0() {
-      return versionsAsOf( KnownVersion.BAMM_1_0_0 );
+   protected static Stream<KnownVersion> versionsStartingWith2_0_0() {
+      return versionsStartingWith( KnownVersion.BAMM_2_0_0 );
+   }
+
+   protected static Stream<KnownVersion> versionsUpToIncluding1_0_0() {
+      return versionsUpToIncluding( KnownVersion.BAMM_1_0_0 );
    }
 
    final String VIOLATION_URN = "http://www.w3.org/ns/shacl#Violation";
@@ -116,6 +120,7 @@ public abstract class AbstractShapeTest {
    final String MESSAGE_COLLECTION_WITHOUT_DATA_TYPE = "A Collection must be defined with either a bamm:dataType or a bamm-c:elementCharacteristic (see focusNode).";
    final String MESSAGE_DATA_TYPE_NOT_STRING = "Value must be a valid literal of type string";
    final String MESSAGE_RECURSIVE_PROPERTY = "A cycle in the Aspect Model was detected";
+   final String MESSAGE_INSTANTIATED_ABSTRACT_ENTITY = "Abstract Entities may not be directly instantiated.";
 
    Model loadMetaModelDefinitions( final KnownVersion version ) {
       return ModelLoader.createModel( List.of(

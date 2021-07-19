@@ -1,0 +1,813 @@
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+#  See the AUTHORS file(s) distributed with this work for additional
+#  information regarding authorship.
+#
+#  This Source Code Form is subject to the terms of the Mozilla Public
+#  License, v. 2.0. If a copy of the MPL was not distributed with this
+#  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+
+@prefix mmm: <urn:bamm:io.openmanufacturing:meta-meta-model:2.0.0#> .
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+
+bamm:ConceptShape
+   a sh:NodeShape ;
+   sh:targetClass mmm:Concept ;
+   sh:property [
+      sh:order 1 ;
+      sh:path bamm:preferredName ;
+      sh:datatype rdf:langString ;
+      sh:uniqueLang true ;
+      sh:minLength 1 ;
+      sh:name "preferredName" ;
+      sh:description "A language specific name for the model element. There may be multiple preferred names." ;
+   ] ;
+   sh:property [
+      sh:order 2 ;
+      sh:path bamm:description ;
+      sh:datatype rdf:langString ;
+      sh:uniqueLang true ;
+      sh:minLength 1 ;
+      sh:name "description" ;
+      sh:description "A language specific description of the model element. There may be multiple descriptions." ;
+   ] ;
+   sh:property [
+      sh:path bamm:see ;
+      sh:nodeKind sh:IRI ;
+      sh:name "see" ;
+      sh:description "Contains a link to an external taxonomy/ontology." ;
+   ] .
+
+bamm:NamedConceptShape
+   a sh:NodeShape ;
+   sh:targetClass mmm:NamedConcept ;
+   sh:property [
+      sh:path bamm:name ;
+      sh:datatype xsd:string ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:minLength 1 ;
+      sh:name "name" ;
+      sh:description "The name of the model element." ;
+   ] .
+
+bamm:AspectShape
+   a sh:NodeShape ;
+   sh:targetClass bamm:Aspect ;
+   sh:property [
+      sh:order 3 ;
+      sh:path bamm:properties ;
+      sh:node dash:ListShape ;
+      mmm:listType bamm:Property ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "properties" ;
+      sh:description "A list of Properties exposed by the Aspect." ;
+      sh:property [
+         sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+         sh:nodeKind sh:BlankNodeOrIRI ;
+      ] ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "Each element in the Aspect's properties list must be either a Property or a blank node referring to a Property and defining bamm:optional \"true\"^^xsd:boolean and/or bamm:payloadName." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?properties ?value
+            where {
+               $this bamm:properties ?properties .
+               ?properties rdf:rest*/rdf:first ?value .
+               filter ( not exists { ?value bamm:property?/rdf:type/rdfs:subClassOf* bamm:Property }
+                   || ( isBlank( ?value ) && not exists { ?value bamm:optional true } ) )
+               filter (not exists { ?value bamm:property?/rdf:type/rdfs:subClassOf* bamm:Property }
+                   || ( isBlank( ?value ) && not exists { ?value bamm:payloadName ?any } ))
+            }
+         """
+      ] ;
+   ] ;
+   sh:property [
+      sh:order 4 ;
+      sh:path bamm:operations ;
+      sh:node dash:ListShape ;
+      mmm:listType bamm:Operation ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "operations" ;
+      sh:description "A list of Operations exposed by the Aspect." ;
+      sh:property [
+         sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+         sh:class bamm:Operation
+      ]
+   ] ;
+   sh:property [
+      sh:order 5 ;
+      sh:path bamm:events ;
+      sh:node dash:ListShape ;
+      mmm:listType bamm:Event ;
+      sh:minCount 0 ;
+      sh:maxCount 1 ;
+      sh:name "events" ;
+      sh:description "A list of Events exposed by the Aspect." ;
+      sh:property [
+         sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+         sh:class bamm:Event
+      ]
+   ] .
+
+bamm:EntityShape
+   a sh:NodeShape ;
+   sh:target [
+      a sh:SPARQLTarget ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this
+         where {
+            $this rdf:type/rdfs:subClassOf* bamm:Entity .
+         }
+      """
+   ] ;
+   sh:property [
+      sh:order 3 ;
+      sh:path bamm:properties ;
+      sh:node dash:ListShape ;
+      mmm:listType bamm:Property ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "properties" ;
+      sh:description "A list of properties defined in the scope of the Entity." ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "Each element in the Entity's properties list must be either a Property or a blank node referring to a Property and defining either bamm:optional \"true\"^^xsd:boolean and/or bamm:payloadName or bamm:notInPayload \"true\"^^xsd:boolean." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?properties ?value
+            where {
+               $this bamm:properties ?properties .
+               ?properties rdf:rest*/rdf:first ?value .
+               filter ( not exists { ?value bamm:property?/rdf:type/rdfs:subClassOf* bamm:Property }
+                   || ( isBlank( ?value ) && not exists { ?value bamm:optional true } ) )
+               filter ( not exists { ?value bamm:property?/rdf:type/rdfs:subClassOf* bamm:Property }
+                   || ( isBlank( ?value ) && not exists { ?value bamm:notInPayload true } ) )
+               filter ( not exists { ?value bamm:property?/rdf:type/rdfs:subClassOf* bamm:Property }
+                   || ( isBlank( ?value ) && not exists { ?value bamm:payloadName ?any } ) )
+            }
+         """
+      ] ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "A Property of an Entity may only be defined with bamm:notInPayload \"true\"^^xsd:boolean when the Entity, or one of its parent Entities, is used as the data type of an Enumeration." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?properties ?value
+            where {
+               $this bamm:properties ?properties .
+               ?properties rdf:rest*/rdf:first ?value .
+               filter ( isBlank( ?value ) && exists { ?value bamm:notInPayload true } ) .
+               filter ( not exists {
+                  ?enumeration rdf:type/rdfs:subClassOf* bamm-c:Enumeration .
+                  ?enumeration (<>|!<>)* $this
+               } )
+            }
+         """
+      ] ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "An Entity defining a Property with bamm:notInPayload \"true\"^^xsd:boolean must define at least one more Property." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?properties
+            where {
+              $this bamm:properties ?properties .
+              ?properties rdf:rest*/rdf:first ?value .
+              filter ( isBlank( ?value ) && exists { ?value bamm:notInPayload true } )
+              filter ( exists {
+                ?enumeration rdf:type/rdfs:subClassOf* bamm-c:Enumeration .
+                ?enumeration bamm:dataType $this
+              } )
+              optional {
+                select $this ( count( ?property ) as ?propertyCount )
+                where {
+                  $this bamm:properties ?properties .
+                  ?properties  rdf:rest*/rdf:first  ?property .
+                  filter ( not exists { ?property bamm:notInPayload true } )
+                }
+                group by $this
+              }
+              filter ( !bound( ?propertyCount ) || ( ?propertyCount = 0 ) )
+            }
+         """
+      ] ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "A Property of an Entity may not be defined with both bamm:optional \"true\"^^xsd:boolean and bamm:notInPayload \"true\"^^xsd:boolean." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?properties
+            where {
+               $this bamm:properties ?properties .
+               ?properties rdf:rest*/rdf:first ?value .
+               filter ( isBlank( ?value ) && exists { ?value bamm:notInPayload true } && exists { ?value bamm:optional true } ) .
+            }
+         """
+      ] ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "A Property of an Entity may not be defined with both bamm:payloadName and bamm:notInPayload \"true\"^^xsd:boolean." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?properties
+            where {
+               $this bamm:properties ?properties .
+               ?properties rdf:rest*/rdf:first ?value .
+               filter ( isBlank( ?value ) && exists { ?value bamm:notInPayload true } && exists { ?value bamm:payloadName ?any } ) .
+            }
+         """
+      ] ;
+   ] .
+
+bamm:PropertyShape
+   a sh:NodeShape ;
+   sh:targetClass bamm:Property ;
+   sh:property [
+      sh:order 3 ;
+      sh:path bamm:characteristic ;
+      sh:class bamm:Characteristic ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "A cycle in the Aspect Model was detected" ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this
+            where {
+              $this bamm:characteristic ?characteristic
+              filter( exists {
+                $this bamm:characteristic/bamm-c:baseCharacteristic*/bamm-c:left*/bamm-c:right*/bamm:dataType/bamm:properties/rdf:rest*/rdf:first $this .
+              } && not exists { ?characteristic rdf:type/rdfs:subClassOf* bamm-c:Collection } )
+            }
+         """
+      ] ;
+      sh:maxCount 1 ;
+      sh:name "characteristic" ;
+      sh:description "The Characteristic describing the semantics of the Property." ;
+   ] ;
+   sh:property [
+      sh:order 4 ;
+      sh:path bamm:exampleValue ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "The provided exampleValue is no literal on the Property given in the focusNode." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?value
+            where {
+               $this bamm:exampleValue ?value .
+               filter( !isLiteral( ?value ) )
+            }
+         """
+      ] ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "The datatype (see value) of the exampleValue neither matches nor can be cast to the Property's (see focusNode) Characteristic's dataType." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this ?value
+            where {
+               $this bamm:exampleValue ?exampleValue .
+               bind( str( datatype( ?exampleValue ) ) as ?value )
+               $this bamm:characteristic/bamm-c:baseCharacteristic*/bamm:dataType ?characteristicDataType .
+               bind( datatype( ?exampleValue ) as ?providedType )
+               filter(
+                  ( ?providedType != ?characteristicDataType ) &&
+                  not exists { ?providedType bamm:canBeCastTo* ?characteristicDataType }
+               )
+            }
+         """
+      ] ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "An example value may not be set on a Property which does not have a Characteristic" ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this
+            where {
+               $this bamm:exampleValue [] .
+               filter ( not exists { $this bamm:characteristic [] } )
+            }
+         """
+      ] ;
+      sh:minCount 0 ;
+      sh:maxCount 1 ;
+      sh:name "exampleValue" ;
+      sh:description "A real world example value." ;
+   ] .
+
+bamm:CharacteristicShape
+   a sh:NodeShape ;
+   sh:target [
+      a sh:SPARQLTarget ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this
+         where {
+            $this rdf:type?/rdfs:subClassOf+|rdf:type|rdfs:subClassOf+ bamm:Characteristic .
+         }
+      """
+   ] ;
+   sh:property [
+      sh:order 3 ;
+      sh:path bamm:dataType ;
+      sh:nodeKind sh:IRI ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "The dataType (see value) that is used as dataType on the Characteristic (see focusNode) is neither an allowed xsd or rdf type, nor a type that is defined as rdfs:Class." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select distinct $this $value
+            where {
+               $this (bamm-c:left*|bamm-c:right*|bamm-c:baseCharacteristic*)/bamm:dataType ?value .
+               filter( not exists { ?value rdf:type*/rdfs:subClassOf* mmm:Concept }
+                      && ?value not in (
+                        xsd:string,
+                        xsd:boolean,
+                        xsd:decimal,
+                        xsd:integer,
+                        xsd:double,
+                        xsd:float,
+                        xsd:date,
+                        xsd:time,
+                        xsd:dateTime,
+                        xsd:dateTimeStamp,
+                        xsd:gYear,
+                        xsd:gMonth,
+                        xsd:gDay,
+                        xsd:gYearMonth,
+                        xsd:gMonthDay,
+                        xsd:duration,
+                        xsd:yearMonthDuration,
+                        xsd:dayTimeDuration,
+                        xsd:byte,
+                        xsd:short,
+                        xsd:int,
+                        xsd:long,
+                        xsd:unsignedByte,
+                        xsd:unsignedShort,
+                        xsd:unsignedInt,
+                        xsd:unsignedLong,
+                        xsd:positiveInteger,
+                        xsd:negativeInteger,
+                        xsd:nonPositiveInteger,
+                        xsd:nonNegativeInteger,
+                        xsd:hexBinary,
+                        xsd:base64Binary,
+                        xsd:anyURI,
+                        rdf:langString,
+                        bamm:curie
+                     )
+               )
+             }
+         """
+      ] ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "The datatype is not defined on the Characteristic instance (see focusNode)." ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+         select $this
+         where {
+            # select all characteristic instances
+            $this rdf:type/rdfs:subClassOf* bamm:Characteristic .
+            # exclude 'Either' Characteristic since it does not define the data type directly
+            filter ( not exists { $this rdf:type/rdfs:subClassOf* bamm-c:Either } )
+            # exclude 'Collection' Characteristic since it may define the data type in different ways
+            filter ( not exists { $this rdf:type/rdfs:subClassOf* bamm-c:Collection } )
+            # exclude 'Trait' Characteristic since it refers to the datatype via its baseCharacteristic
+            filter ( not exists { $this rdf:type/rdfs:subClassOf* bamm-c:Trait } )
+            # find all characteristic instances which do not define a data type
+            filter ( not exists { $this bamm:dataType [] } ) .
+            filter ( not exists { $this rdf:type/rdfs:subClassOf*/bamm:dataType [] } )
+         }
+       """
+      ];
+      sh:maxCount 1 ;
+      sh:name "dataType" ;
+      sh:description "Defines the data type of all Properties which use this Characteristic." ;
+   ] .
+
+bamm:ConstraintShape
+   a sh:NodeShape ;
+   sh:targetClass bamm:Constraint ;
+   sh:property [
+      sh:order 0 ;
+      sh:path bamm-c:baseCharacteristic ;
+      sh:class bamm:Characteristic ;
+      sh:minCount 0 ;
+      sh:maxCount 0 ;
+      sh:name "baseCharacteristic" ;
+      sh:description "The baseCharacteristic must not be set on the Constraint, but the Trait" ;
+   ] ;
+   sh:property [
+      sh:order 1 ;
+      sh:path bamm:dataType;
+      sh:minCount 0 ;
+      sh:maxCount 0 ;
+      sh:name "dataType" ;
+      sh:description "A Constraint may not change the data type of the Characteristic being constrained." ;
+   ] .
+
+bamm:OperationShape
+   a sh:NodeShape ;
+   sh:targetClass bamm:Operation ;
+   sh:property [
+      sh:order 3 ;
+      sh:path bamm:input ;
+      sh:node dash:ListShape ;
+      mmm:listType bamm:Property ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "input" ;
+      sh:description "A list of input parameters for the Operation. If the operation does not take any input parameters, the input may be omitted." ;
+      sh:property [
+         sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+         sh:class bamm:Property
+      ]
+   ] ;
+   sh:property [
+      sh:order 4 ;
+      sh:path bamm:output ;
+      sh:class bamm:Property ;
+      sh:minCount 0 ;
+      sh:maxCount 1 ;
+      sh:name "output" ;
+      sh:description "The return value of the Operation. If the Operation does not return anything, the output may be omitted." ;
+   ] .
+
+bamm:EventShape
+   a sh:NodeShape ;
+   sh:targetClass bamm:Event ;
+   sh:property [
+      sh:order 3 ;
+      sh:path bamm:parameters ;
+      sh:node dash:ListShape ;
+      mmm:listType bamm:Property ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "parameters" ;
+      sh:description "The parameters defined by an Event." ;
+      sh:property [
+         sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+         sh:class bamm:Property
+      ]
+   ] .
+
+bamm:PayloadNameShape
+   a sh:NodeShape ;
+   sh:targetSubjectsOf bamm:payloadName ;
+   sh:property [
+      sh:order 0 ;
+      sh:path bamm:payloadName ;
+      sh:datatype xsd:string ;
+   ] .
+
+bamm:ValidEntityInstances
+   a sh:NodeShape ;
+   sh:target [
+      a sh:SPARQLTarget ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this
+         where {
+            $this rdf:type/rdf:type bamm:Entity .
+         }
+      """
+   ] ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+      sh:message "The Entity instance is missing a required Property." ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this ?value
+         where {
+           $this a ?entityType .
+           ?entityType bamm:extends*/bamm:properties/rdf:rest*/rdf:first ?property .
+
+           # Select only the non-optional Properties
+           filter( exists { ?property a bamm:Property } || ( isBlank( ?property ) && exists { ?property bamm:notInPayload true } ) ) .
+
+           # Check that the instance uses the Property
+           filter( ( !isBlank( ?property ) && not exists { $this ?property [] } ) || ( isBlank( ?property ) && not exists {
+                   ?property bamm:property ?actualProperty .
+                   $this ?actualProperty [] .
+                 } ) )
+           bind( ?property as ?value )
+         }
+      """
+   ] ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+      sh:message "The type of the value of the Property of the Entity instance does not match the Property definition." ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this ?value ?path
+         where {
+           $this a ?entityType .
+           ?entityType bamm:extends*/bamm:properties/rdf:rest*/rdf:first ?property .
+           ?property bamm:characteristic/bamm-c:baseCharacteristic*/bamm:dataType ?characteristicDataType .
+           $this ?property ?instanceValue .
+           bind( datatype( ?instanceValue ) as ?providedType )
+           filter( ( ?providedType != ?characteristicDataType ) &&
+                  not exists { ?providedType bamm:canBeCastTo* ?characteristicDataType } )
+           bind( ?property as ?path )
+           bind( str( ?instanceValue ) as ?value )
+         }
+      """
+   ] ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+		sh:message "The value for a list Property of the Entity instance is not defined as a list." ;
+		sh:prefixes bamm:prefixDeclarations ;
+		sh:select """
+		   select $this ?path
+		   where {
+		     $this a ?entityType .
+			 ?entityType bamm:extends*/bamm:properties/rdf:rest*/rdf:first ?property .
+			 ?property bamm:characteristic/bamm-c:baseCharacteristic* ?characteristic .
+			 filter ( exists { ?characteristic rdf:type/rdfs:subClassOf* bamm-c:Collection } )
+			 ?characteristic bamm:dataType ?characteristicDataType .
+			 $this ?property ?listInstance .
+			 filter ( not exists { ?listInstance rdf:rest*/rdf:first ?instanceValue } ) .
+			 bind( ?property as ?path )
+		   }
+		"""
+   ] ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+        sh:message "The value for a list Property of the Entity instance contains an entry with an invalid data type." ;
+		sh:prefixes bamm:prefixDeclarations ;
+		sh:select """
+		   select $this ?value ?path
+			where {
+			  $this a ?entityType .
+			  ?entityType bamm:extends*/bamm:properties/rdf:rest*/rdf:first ?property .
+			  ?property bamm:characteristic/bamm-c:baseCharacteristic* ?characteristic .
+			  filter ( exists { ?characteristic rdf:type/rdfs:subClassOf* bamm-c:Collection } )
+			  ?property bamm:characteristic/bamm-c:baseCharacteristic*/bamm:dataType ?characteristicDataType .
+			  $this ?property ?listInstance .
+			  ?listInstance rdf:rest*/rdf:first ?instanceValue
+			  optional { ?instanceValue rdf:type ?entityListType }
+			  bind( coalesce( ?entityListType, dataType( ?instanceValue ) ) as ?providedType )
+			  filter( ( ?providedType != ?characteristicDataType ) &&
+					 not exists { ?providedType bamm:canBeCastTo* ?characteristicDataType } )
+			  bind( ?property as ?path )
+			  bind( str( ?instanceValue ) as ?value )
+			}
+		"""
+   ] .
+
+bamm:UniqueEntityInstances
+   a sh:NodeShape ;
+   sh:severity sh:Warning ;
+   sh:target [
+      a sh:SPARQLTarget ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this
+         where {
+            $this rdf:type/rdf:type bamm:Entity .
+         }
+      """
+   ] ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+      sh:message "Values for Properties of Entity instances should be unique." ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+        select distinct $this ?value
+        where {
+          ?entityType rdf:type bamm:Entity .
+          $this a ?entityType .
+          ?anotherInstance a ?entityType .
+          filter( str( $this ) < str( ?anotherInstance ) )
+          filter( $this != ?anotherInstance )
+
+          {
+            select $this ?instance1 ( group_concat( ?part; separator=" " ) as ?serialized1 )
+            where {
+              ?instance1 rdf:type/rdf:type bamm:Entity .
+              {
+                select $this ?instance1 ?property
+                where {
+                  ?instance1 ?property [] .
+                  filter( ?property != rdf:type )
+                }
+              }
+              ?instance1 ?property ?val .
+              bind( concat( str( ?property ), ":", str( ?val ) ) as ?part )
+            }
+            group by ?instance1 $this
+          }
+
+          {
+            select $this ?instance2 ( group_concat( ?part; separator=" " ) as ?serialized2 )
+            where {
+              ?instance2 rdf:type/rdf:type bamm:Entity .
+              {
+                select $this ?instance2 ?property
+                where {
+                  ?instance2 ?property [] .
+                  filter( ?property != rdf:type )
+                }
+              }
+              ?instance2 ?property ?val .
+              bind( concat( str( ?property ), ":", str( ?val ) ) as ?part )
+            }
+            group by ?instance2 $this
+          }
+
+          filter( ( ?instance1 != ?instance2 ) && ( ?serialized1 = ?serialized2 ) )
+          bind( str( ?anotherInstance ) as ?value )
+        }
+      """
+   ] .
+
+bamm:EntityInstancesHaveOnlyKnownProperties
+   a sh:NodeShape ;
+   sh:severity sh:Warning ;
+   sh:target [
+      a sh:SPARQLTarget ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this
+         where {
+            $this rdf:type/rdf:type bamm:Entity .
+         }
+      """
+   ] ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+      sh:message "The Entity instance has an attribute that is not a Property defined in the Entity" ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+        select $this ?value
+        where {
+          $this a ?entityType .
+          $this ?property [] .
+          filter( ?property != rdf:type )
+          filter ( not exists { ?entityType bamm:extends*/bamm:properties/rdf:rest*/rdf:first ?property } )
+          filter ( not exists {
+            ?entityType bamm:extends*/bamm:properties/rdf:rest*/rdf:first ?blankProperty .
+            ?blankProperty bamm:property ?property .
+          } )
+          bind( ?property as ?value )
+        }
+      """
+   ] .
+
+bamm:AbstractEntityDataTypeShape
+   a sh:NodeShape ;
+   sh:targetClass bamm:AbstractEntity ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+      sh:message "The Abstract Entity {$this} which is used as the data-type for {?characteristicName} has not been extended." ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this ?value ?characteristicName
+         where {
+           $this rdf:type bamm:AbstractEntity .
+           filter ( exists { ?property bamm:characteristic/bamm-c:baseCharacteristic*/bamm:dataType $this } ) .
+           filter( not exists { [] bamm:extends $this } ) .
+           ?property bamm:characteristic ?characteristic .
+           ?characteristic bamm:name ?characteristicName .
+           bind( ?characteristic as ?value )
+         }
+      """
+   ] .
+
+bamm:AbstractEntityDirectlyInstantiated
+   a sh:NodeShape ;
+   sh:target [
+      a sh:SPARQLTarget ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this
+         where {
+            $this rdf:type/rdf:type bamm:AbstractEntity .
+         }
+      """
+   ] ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+      sh:message "Abstract Entities may not be directly instantiated." ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this ?value
+         where {
+           $this a ?value .
+         }
+      """
+   ] .
+
+bamm:ExtendsShape
+   a sh:NodeShape ;
+   sh:targetSubjectsOf bamm:extends ;
+   sh:property [
+      sh:path bamm:extends ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+   ] .
+
+bamm:AmbiguousEntityShape
+   a sh:NodeShape ;
+   sh:target [
+      a sh:SPARQLTarget ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this
+         where {
+            $this bamm:extends/bamm:extends* ?extendedEntity .
+         }
+      """
+   ] ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+      rdfs:comment "Ensures that all Entities in a chain of extending Entities do not use ambiguous Property naming." ;
+      sh:message "The Entity {$this} contains a Property with name {?thisName} which causes ambiguity in combination with the {?other} Entity." ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this ?value ?thisName ?other
+         where {
+           optional { $this bamm:extends ?other }
+           optional { ?other bamm:extends $this }
+
+           $this bamm:properties/rdf:rest*/rdf:first ?thisPropertyNode .
+           ?other bamm:properties/rdf:rest*/rdf:first ?otherPropertyNode .
+
+           optional { ?thisPropertyNode bamm:name|(bamm:property/bamm:name) ?thisDirectName } .
+           optional { ?thisPropertyNode bamm:payloadName ?thisPayloadName } .
+           bind( coalesce( ?thisPayloadName, ?thisDirectName ) as ?thisName  ) .
+
+           optional { ?otherPropertyNode bamm:name|(bamm:property/bamm:name) ?otherDirectName } .
+           optional { ?otherPropertyNode bamm:payloadName ?otherPayloadName } .
+           bind( coalesce( ?otherPayloadName, ?otherDirectName ) as ?otherName  ) .
+
+           filter( ?thisName = ?otherName )
+           bind( ?thisName as ?value )
+         }
+      """
+   ] ;
+   sh:sparql [
+      a sh:SPARQLConstraint ;
+      rdfs:comment "Ensures that Entities extending the same Entity do not use ambiguous Property naming." ;
+      sh:message "The Entity {$this} contains a Property with name {?thisName} which causes ambiguity in combination with the {?other} Entity." ;
+      sh:prefixes bamm:prefixDeclarations ;
+      sh:select """
+         select $this ?value ?thisName ?other
+         where {
+           optional { $this bamm:extends ?extendedEntityA }
+           optional { ?other bamm:extends ?extendedEntityB }
+           filter( ?extendedEntityA = ?extendedEntityB )
+           filter( ?this != ?other )
+
+           $this bamm:properties/rdf:rest*/rdf:first ?thisPropertyNode .
+           ?other bamm:properties/rdf:rest*/rdf:first ?otherPropertyNode .
+
+           optional { ?thisPropertyNode bamm:name|(bamm:property/bamm:name) ?thisDirectName } .
+           optional { ?thisPropertyNode bamm:payloadName ?thisPayloadName } .
+           bind( coalesce( ?thisPayloadName, ?thisDirectName ) as ?thisName  ) .
+
+           optional { ?otherPropertyNode bamm:name|(bamm:property/bamm:name) ?otherDirectName } .
+           optional { ?otherPropertyNode bamm:payloadName ?otherPayloadName } .
+           bind( coalesce( ?otherPayloadName, ?otherDirectName ) as ?otherName  ) .
+
+           filter( ?thisName = ?otherName )
+           bind( ?thisName as ?value )
+         }
+      """
+   ] .
+
+bamm:ConstrainListTypeUsageShape
+   a sh:NodeShape ;
+   sh:targetSubjectsOf mmm:listType ;
+   sh:property [
+      sh:order 0 ;
+      sh:path mmm:listType ;
+      sh:sparql [
+         a sh:SPARQLConstraint ;
+         sh:message "mmm:listType may only be used for List Shapes" ;
+         sh:prefixes bamm:prefixDeclarations ;
+         sh:select """
+            select $this
+            where {
+              $this mmm:listType []
+              filter ( not exists { $this sh:node dash:ListShape } )
+            }
+         """
+      ]
+   ] .

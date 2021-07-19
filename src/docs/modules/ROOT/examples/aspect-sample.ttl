@@ -85,11 +85,12 @@
    bamm:name "MachineStateTimeSeries" ;
    bamm:dataType :MachineStateTimeSeriesEntity .
 
-:MachineStateTimeSeriesEntity bamm:refines bamm-e:TimeSeriesEntity ;
+:MachineStateTimeSeriesEntity a bamm:Entity ;
    bamm:name "MachineStateTimeSeriesEntity" ;
+   bamm:extends bamm-e:TimeSeriesEntity ;
    bamm:properties ( :machineState ) .
 
-:machineState bamm:refines bamm-e:value ;
+:machineState a bamm:Property ;
    bamm:name "machineState" ;
    bamm:characteristic :MachineState .
 # end::timeseries-declaration[]
@@ -195,26 +196,37 @@
    bamm:name "severity" ;
    bamm:characteristic bamm-c:Text .
 
-# tag::refining-entity-declaration[]
-:RefiningEntity bamm:refines :EntityToBeRefined ;
-    bamm:name "RefiningEntity" ;
-    bamm:properties ( :propertyRefiningPropertyWithoutCharacteristic ) .
+# tag::extending-entity-declaration[]
+:Student a bamm:Entity ;
+    bamm:name "Student" ;
+    bamm:extends :Person ;
+    bamm:properties ( :studentNumber ) .
 
-:propertyRefiningPropertyWithoutCharacteristic bamm:refines :propertyWithoutCharacteristic ;
-    bamm:name "propertyRefiningPropertyWithoutCharacteristic" ;
-    bamm:characteristic :MetricTemperature .
+:Teacher a bamm:Entity ;
+    bamm:name "Teacher" ;
+    bamm:extends :Person ;
+    bamm:properties ( :employeeNumber ) .
 
-:EntityToBeRefined a bamm:Entity ;
-    bamm:name "EntityToBeRefined" ;
-    bamm:properties ( :propertyWithCharacteristic :propertyWithoutCharacteristic ) .
+:Person a bamm:Entity ;
+    bamm:name "Person" ;
+    bamm:properties ( :name :surname ) .
+# end::extending-entity-declaration[]
 
-:propertyWithCharacteristic a bamm:Property ;
-    bamm:name "propertyWithoutCharacteristic" ;
-    bamm:characteristic bamm-c:Timestamp .
+# tag::abstract-entity-declaration[]
+:VehicleComponent a bamm:AbstractEntity ;
+    bamm:name "VehicleComponent" ;
+    bamm:properties ( :typeNumber :manufacturer ) .
 
-:propertyWithoutCharacteristic a bamm:Property ;
-    bamm:name "propertyWithoutCharacteristic" .
-# end::refining-entity-declaration[]
+:Steeringwheel a bamm:Entity ;
+   bamm:name "Steeringwheel " ;
+   bamm:extends :VehicleComponent ;
+   bamm:properties ( :isMultifunction  ) .
+
+:Seat a bamm:Entity ;
+   bamm:name "Seat" ;
+   bamm:extends :VehicleComponent ;
+   bamm:properties ( :material )
+# end::abstract-entity-declaration[]
 
 # tag::operation-declaration[]
 :toggle a bamm:Operation ;

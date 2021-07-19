@@ -1,0 +1,34 @@
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+#  See the AUTHORS file(s) distributed with this work for additional
+#  information regarding authorship.
+#
+#  This Source Code Form is subject to the terms of the Mozilla Public
+#  License, v. 2.0. If a copy of the MPL was not distributed with this
+#  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#> .
+
+bamm-e:FileResource a bamm:Entity ;
+   bamm:name "FileResource" ;
+   bamm:preferredName "File Resource" ;
+   bamm:description "A file in a specific format"@en ;
+   bamm:properties ( bamm-e:resource bamm-e:mimeType ) .
+
+bamm-e:resource a bamm:Property ;
+   bamm:name "resource" ;
+   bamm:preferredName "Resource"@en ;
+   bamm:description "Location of a resource"@en ;
+   bamm:characteristic bamm-c:ResourcePath .
+
+bamm-e:mimeType a bamm:Property ;
+   bamm:name "mimeType" ;
+   bamm:preferredName "MIME Type"@en ;
+   bamm:description "A MIME type as defined in RFC 2046."@en ;
+   bamm:exampleValue "application/json" ;
+   bamm:characteristic bamm-c:MimeType .
+

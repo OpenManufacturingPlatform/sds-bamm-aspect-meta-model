@@ -1,0 +1,62 @@
+#
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+# See the AUTHORS file(s) distributed with this work for additional
+# information regarding authorship.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+#
+@prefix : <urn:bamm:io.openmanufacturing.test:1.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:TestEntityWithEntityListInstanceInvalidTypeInList a bamm:Aspect ;
+   bamm:name "TestEntityWithEntityListInstanceInvalidTypeInList" ;
+   bamm:properties ( ) ;
+   bamm:operations ( ) .
+
+:Entity a bamm:Entity ;
+   bamm:name "Entity" ;
+   bamm:properties ( :intProperty :entityListProperty ) .
+
+:entityListProperty a bamm:Property ;
+   bamm:name "entityListProperty" ;
+   bamm:characteristic [
+      a bamm-c:List ;
+      bamm:name "EntityList" ;
+      bamm:dataType :ListEntity
+   ] .
+
+:CustomCharacteristic a bamm:Characteristic ;
+   bamm:name "CustomCharacteristic" ;
+   bamm:dataType xsd:integer .
+
+:intProperty a bamm:Property ;
+   bamm:name "intProperty" ;
+   bamm:characteristic :CustomCharacteristic .
+
+:Instance a :Entity ;
+   :entityListProperty ( :ListEntityInstanceOne :AnotherListEntityInstance :ListEntityInstanceTwo ) ;
+   :intProperty 42 .
+
+:ListEntity a bamm:Entity ;
+   bamm:name "ListEntity" ;
+   bamm:properties ( :intProperty ) .
+
+:ListEntityInstanceOne a :ListEntity ;
+   :intProperty 34 .
+
+:ListEntityInstanceTwo a :ListEntity ;
+   :intProperty 56 .
+
+:AnotherListEntity a bamm:Entity ;
+   bamm:name "AnotherListEntity" ;
+   bamm:properties ( :intProperty ) .
+
+:AnotherListEntityInstance a :AnotherListEntity ;
+   :intProperty 89 .

@@ -1,0 +1,62 @@
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+#  See the AUTHORS file(s) distributed with this work for additional
+#  information regarding authorship.
+#
+#  This Source Code Form is subject to the terms of the Mozilla Public
+#  License, v. 2.0. If a copy of the MPL was not distributed with this
+#  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Central definition of namespaces used in SPARQL queries in shapes
+bamm:prefixDeclarations
+   sh:declare [
+      sh:prefix "mmm" ;
+      sh:namespace "urn:bamm:io.openmanufacturing:meta-meta-model:2.0.0#"^^xsd:anyURI ;
+   ] ;
+   sh:declare [
+      sh:prefix "bamm" ;
+      sh:namespace "urn:bamm:io.openmanufacturing:meta-model:2.0.0#"^^xsd:anyURI ;
+   ] ;
+   sh:declare [
+      sh:prefix "bamm-c" ;
+      sh:namespace "urn:bamm:io.openmanufacturing:characteristic:2.0.0#"^^xsd:anyURI ;
+   ] ;
+   sh:declare [
+      sh:prefix "bamm-e" ;
+      sh:namespace "urn:bamm:io.openmanufacturing:entity:2.0.0#"^^xsd:anyURI ;
+   ] ;
+   sh:declare [
+      sh:prefix "unit" ;
+      sh:namespace "urn:bamm:io.openmanufacturing:unit:2.0.0#"^^xsd:anyURI ;
+   ] ;
+   sh:declare [
+      sh:prefix "rdf" ;
+      sh:namespace "http://www.w3.org/1999/02/22-rdf-syntax-ns#"^^xsd:anyURI ;
+   ] ;
+   sh:declare [
+      sh:prefix "rdfs" ;
+      sh:namespace "http://www.w3.org/2000/01/rdf-schema#"^^xsd:anyURI ;
+   ] ;
+   sh:declare [
+      sh:prefix "sh" ;
+      sh:namespace "http://www.w3.org/ns/shacl#"^^xsd:anyURI ;
+   ] ;
+   sh:declare [
+      sh:prefix "dash" ;
+      sh:namespace "http://datashapes.org/dash#"^^xsd:anyURI ;
+   ] ;
+   sh:declare [
+      sh:prefix "xsd" ;
+      sh:namespace "http://www.w3.org/2001/XMLSchema#"^^xsd:anyURI ;
+   ] ;
+.
+
+bamm:jsValidations
+   a sh:JSLibrary ;
+   sh:jsLibraryURL "bamm://characteristic/2.0.0/characteristic-validations.js"^^xsd:anyURI .

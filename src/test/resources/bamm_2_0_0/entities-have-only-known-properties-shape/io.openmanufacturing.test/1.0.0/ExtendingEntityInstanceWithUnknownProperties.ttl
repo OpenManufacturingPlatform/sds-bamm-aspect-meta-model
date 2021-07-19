@@ -1,0 +1,51 @@
+#
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+# See the AUTHORS file(s) distributed with this work for additional
+# information regarding authorship.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+#
+@prefix : <urn:bamm:io.openmanufacturing.test:1.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:ExtendingEntityIdenticalInstances a bamm:Aspect ;
+   bamm:name "ExtendingEntityIdenticalInstances" ;
+   bamm:properties ( ) ;
+   bamm:operations ( ) .
+
+:AbstractTestEntity a bamm:AbstractEntity ;
+   bamm:name "AbstractTestEntity" ;
+   bamm:properties ( :abstractTestProperty ) .
+
+:abstractTestProperty a bamm:Property ;
+   bamm:name "abstractTestProperty" ;
+   bamm:characteristic [
+      a bamm:Characteristic ;
+      bamm:name "String" ;
+      bamm:dataType xsd:string
+   ] .
+
+:ExtendingEntity a bamm:Entity ;
+   bamm:name "Entity" ;
+   bamm:extends :AbstractTestEntity ;
+   bamm:properties ( :intProperty ) .
+
+:intProperty a bamm:Property ;
+   bamm:name "intProperty" ;
+   bamm:characteristic [
+      a bamm:Characteristic ;
+      bamm:name "Integer" ;
+      bamm:dataType xsd:integer
+   ] .
+
+:ExtendingEntityInstance a :ExtendingEntity ;
+   :abstractTestProperty "foo" ;
+   :intProperty 42 ;
+   :unkown "What is this?" .

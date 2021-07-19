@@ -1,0 +1,70 @@
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+#  See the AUTHORS file(s) distributed with this work for additional
+#  information regarding authorship.
+#
+#  This Source Code Form is subject to the terms of the Mozilla Public
+#  License, v. 2.0. If a copy of the MPL was not distributed with this
+#  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+bamm-c:Timestamp a bamm:Characteristic ;
+   bamm:name "Timestamp" ;
+   bamm:preferredName "Timestamp"@en ;
+   bamm:description "Describes a Property which contains the date and time with an optional timezone."@en ;
+   bamm:dataType xsd:dateTime .
+
+bamm-c:Text a bamm:Characteristic ;
+   bamm:name "Text" ;
+   bamm:preferredName "Text"@en ;
+   bamm:description "Describes a Property which contains plain text. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en ;
+   bamm:dataType xsd:string .
+
+bamm-c:MultiLanguageText a bamm:Characteristic ;
+   bamm:name "MultiLanguageText" ;
+   bamm:preferredName "Multi-Language Text"@en ;
+   bamm:description "Describes a Property which contains plain text in multiple languages. This is intended exclusively for human readable strings, not for identifiers, measurement values, etc."@en ;
+   bamm:dataType rdf:langString .
+
+bamm-c:Boolean a bamm:Characteristic ;
+   bamm:name "Boolean" ;
+   bamm:preferredName "Boolean"@en ;
+   bamm:description """Represents a boolean value (i.e. a "flag")."""@en ;
+   bamm:dataType xsd:boolean .
+
+bamm-c:Locale a bamm:Characteristic ;
+   bamm:name "Locale" ;
+   bamm:preferredName "Locale"@en ;
+   bamm:description """Describes a Property containing a locale according to IETF BCP 47, for example "de-DE"."""@en ;
+   bamm:dataType xsd:string .
+
+bamm-c:Language a bamm:Characteristic ;
+   bamm:name "Language" ;
+   bamm:preferredName "Language"@en ;
+   bamm:description """Describes a Property containing a language according to ISO 639-1, for example "de"."""@en ;
+   bamm:dataType xsd:string .
+
+bamm-c:UnitReference a bamm:Characteristic ;
+   bamm:name "UnitReference" ;
+   bamm:preferredName "Unit Reference"@en ;
+   bamm:description "Describes a Property containing a reference to one of the units in the Unit Catalog."@en ;
+   bamm:dataType bamm:curie .
+
+bamm-c:ResourcePath a bamm:Characteristic ;
+   bamm:name "ResourcePath" ;
+   bamm:preferredName "Resource Path"@en ;
+   bamm:description "The path of a resource."@en ;
+   bamm:dataType xsd:anyURI .
+
+bamm-c:MimeType a bamm:Characteristic ;
+   bamm:name "MimeType" ;
+   bamm:preferredName "MIME Type"@en ;
+   bamm:description """A MIME type as defined in RFC 2046, for example "application/pdf"."""@en ;
+   bamm:dataType xsd:string .
+

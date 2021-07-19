@@ -1,0 +1,59 @@
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+#  See the AUTHORS file(s) distributed with this work for additional
+#  information regarding authorship.
+#
+#  This Source Code Form is subject to the terms of the Mozilla Public
+#  License, v. 2.0. If a copy of the MPL was not distributed with this
+#  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Describes valid implicit type conversions (casts) and meta-information about types.
+
+# canBeCastTo should be evaluated as a reflexive, transitive, asymmetric property.
+# This represents valid conversions that correspond to XSD's type hierarchy.
+bamm:canBeCastTo a rdf:Property .
+
+xsd:byte bamm:canBeCastTo xsd:short .
+xsd:short bamm:canBeCastTo xsd:int .
+xsd:int bamm:canBeCastTo xsd:long .
+xsd:long bamm:canBeCastTo xsd:integer .
+xsd:integer bamm:canBeCastTo xsd:decimal .
+xsd:unsignedByte bamm:canBeCastTo xsd:unsignedShort .
+xsd:unsignedShort bamm:canBeCastTo xsd:unsignedInt .
+xsd:unsignedInt bamm:canBeCastTo xsd:unsignedLong .
+xsd:unsignedLong bamm:canBeCastTo xsd:nonNegativeInteger .
+xsd:positiveInteger bamm:canBeCastTo xsd:nonNegativeInteger .
+xsd:nonNegativeInteger bamm:canBeCastTo xsd:integer .
+xsd:negativeInger bamm:canBeCastTo xsd:nonPositiveInteger .
+xsd:nonPositiveInteger bamm:canBeCastTo xsd:integer .
+xsd:dateTimeStamp bamm:canBeCastTo xsd:dateTime .
+xsd:yearMonthDuration bamm:canBeCastTo xsd:duration .
+xsd:dayTimeDuration bamm:canBeCastTo xsd:duration .
+
+# Signifies data types that have an inherently character-based value space.
+bamm:hasCharacterValueSpace a rdf:Property .
+
+xsd:string bamm:hasCharacterValueSpace true .
+xsd:date bamm:hasCharacterValueSpace true .
+xsd:time bamm:hasCharacterValueSpace true .
+xsd:dateTime bamm:hasCharacterValueSpace true .
+xsd:dateTimeStamp bamm:hasCharacterValueSpace true .
+xsd:gYear bamm:hasCharacterValueSpace true .
+xsd:gMonth bamm:hasCharacterValueSpace true .
+xsd:gDay bamm:hasCharacterValueSpace true .
+xsd:gYearMonth bamm:hasCharacterValueSpace true .
+xsd:gMonthDay bamm:hasCharacterValueSpace true .
+xsd:duration bamm:hasCharacterValueSpace true .
+xsd:yearMonthDuration bamm:hasCharacterValueSpace true .
+xsd:dayTimeDuration bamm:hasCharacterValueSpace true .
+xsd:hexBinary bamm:hasCharacterValueSpace true .
+xsd:base64Binary bamm:hasCharacterValueSpace true .
+xsd:anyURI bamm:hasCharacterValueSpace true .
+bamm:curie bamm:hasCharacterValueSpace true .
+rdf:langString bamm:hasCharacterValueSpace true .

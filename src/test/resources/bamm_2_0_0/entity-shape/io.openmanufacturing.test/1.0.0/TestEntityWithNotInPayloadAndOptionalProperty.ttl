@@ -1,0 +1,50 @@
+#
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+# See the AUTHORS file(s) distributed with this work for additional
+# information regarding authorship.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+#
+@prefix : <urn:bamm:io.openmanufacturing.test:1.0.0#> .
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:TestEntityWithNotInPayloadAndOptionalProperty a bamm:Aspect ;
+   bamm:name "TestEntityWithNotInPayloadAndOptionalProperty" ;
+   bamm:properties ( :testProperty ) ;
+   bamm:operations ( ) .
+
+:testProperty a bamm:Property ;
+   bamm:name "testProperty" ;
+   bamm:characteristic :TestEnumeration .
+
+:TestEnumeration a bamm-c:Enumeration ;
+   bamm:name "TestEnumeration" ;
+   bamm:dataType :TestEntity ;
+   bamm-c:values ( :TestEntityInstance ) .
+
+:TestEntity a bamm:Entity ;
+   bamm:name "TestEntity" ;
+   bamm:preferredName "Test Entity"@en ;
+   bamm:description "A test Entity"@en ;
+   bamm:properties ( [ bamm:property :testPropertyTwo; bamm:notInPayload true ; bamm:optional true ] :testPropertyThree ).
+
+:testPropertyTwo a bamm:Property ;
+   bamm:name "testPropertyTwo" ;
+   bamm:preferredName "Test Property"@en ;
+   bamm:description "A property with a text value."@en ;
+   bamm:characteristic bamm-c:Text .
+
+:testPropertyThree a bamm:Property ;
+   bamm:name "testPropertyThree" ;
+   bamm:characteristic bamm-c:Text .
+
+:TestEntityInstance a :TestEntity ;
+   :testPropertyTwo "foo" ;
+   :testPropertyThree "bar" .

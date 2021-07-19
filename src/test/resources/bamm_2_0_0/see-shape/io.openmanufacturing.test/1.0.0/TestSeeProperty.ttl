@@ -1,0 +1,42 @@
+#
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+# See the AUTHORS file(s) distributed with this work for additional
+# information regarding authorship.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+#
+@prefix : <urn:bamm:io.openmanufacturing.test:1.0.0#> .
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:TestSeeProperty a bamm:Aspect ;
+   bamm:name "TestSeeProperty" ;
+   bamm:see <http://open-manufacturing.org/> ;
+   bamm:properties ( ) ;
+   bamm:operations ( ) .
+
+:TestCharacteristicInstance a bamm:Characteristic ;
+   bamm:name "TestCharacteristicInstance" ;
+   bamm:see <http://open-manufacturing.org/> ;
+   bamm:dataType xsd:float .
+
+:TestEntity a bamm:Entity ;
+   bamm:name "TestEntity" ;
+   bamm:see <http://open-manufacturing.org/> ;
+   bamm:properties ( ).
+
+:TestOperation a bamm:Operation ;
+   bamm:name "TestOperation" ;
+   bamm:see <http://open-manufacturing.org/> ;
+   bamm:input ( ) .
+
+:testProperty a bamm:Property ;
+   bamm:name "testProperty" ;
+   bamm:see <http://open-manufacturing.org/> ;
+   bamm:characteristic :TestCharacteristicInstance .

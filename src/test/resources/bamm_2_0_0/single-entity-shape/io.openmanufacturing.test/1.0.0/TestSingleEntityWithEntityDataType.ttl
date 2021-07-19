@@ -1,0 +1,54 @@
+#
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+# See the AUTHORS file(s) distributed with this work for additional
+# information regarding authorship.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+#
+@prefix : <urn:bamm:io.openmanufacturing.test:1.0.0#> .
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:TestSingleEntityWithEntityDataType a bamm-c:SingleEntity ;
+   bamm:name "TestSingleEntityWithEntityDataType" ;
+   bamm:preferredName "Test Single Entity"@en ;
+   bamm:description "Test Single Entity"@en ;
+   bamm:dataType :TestEntity .
+
+:TestEntity a bamm:Entity ;
+   bamm:name "TestEntity" ;
+   bamm:preferredName "Test Entity"@en ;
+   bamm:preferredName "Test Entität"@de ;
+   bamm:description "A test Entity"@en ;
+   bamm:description "Eine test Entität"@de ;
+   bamm:properties ( :entityList :integerList ).
+
+:entityList a bamm:Property ;
+   bamm:name "entityList" ;
+   bamm:preferredName "Entity List"@en ;
+   bamm:preferredName "Entitätliste"@de ;
+   bamm:description "A property with a list of complex value."@en ;
+   bamm:description "Eine Property mit einer Liste mit komplexen Werten."@de ;
+   bamm:characteristic [
+      a bamm-c:List ;
+      bamm:name "EntityList" ;
+      bamm:dataType :TestEntity
+   ] .
+
+:integerList a bamm:Property ;
+   bamm:name "integerList" ;
+   bamm:preferredName "Integer List"@en ;
+   bamm:preferredName "Numerische Liste"@de ;
+   bamm:description "A property with a list of numeric value."@en ;
+   bamm:description "Eine Property mit einer Liste mit numerischen Werten."@de ;
+   bamm:characteristic [
+      a bamm-c:List ;
+      bamm:name "NumericList" ;
+      bamm:dataType xsd:integer
+   ] .

@@ -1,0 +1,107 @@
+#
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+# See the AUTHORS file(s) distributed with this work for additional
+# information regarding authorship.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+#
+@prefix : <urn:bamm:io.openmanufacturing.test:1.0.0#> .
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:TestAspect a bamm:Aspect ;
+   bamm:name "TestAspect" ;
+   bamm:preferredName "Test Aspect"@en ;
+   bamm:preferredName "Test Aspekt"@de ;
+   bamm:properties ( :stringProperty :integerProperty :entityProperty ) ;
+   bamm:operations ( ) .
+
+:stringProperty a bamm:Property ;
+   bamm:name "stringProperty" ;
+   bamm:preferredName "String Property"@en ;
+   bamm:preferredName "String Wert"@de ;
+   bamm:description "A property with a text value."@en ;
+   bamm:description "Eine Property mit einem textuellen Wert."@de ;
+   bamm:characteristic bamm-c:Text .
+
+:integerProperty a bamm:Property ;
+   bamm:name "integerProperty" ;
+   bamm:preferredName "Integer Property"@en ;
+   bamm:preferredName "Numerischer Wert"@de ;
+   bamm:description "A property with a numeric value."@en ;
+   bamm:description "Eine Property mit einem numerischen Wert."@de ;
+   bamm:characteristic :TestTrait .
+
+:TestTrait a bamm-c:Trait ;
+   bamm:name "TestTrait" ;
+   bamm-c:baseCharacteristic :IntegerCharacteristic ;
+   bamm-c:constraint :TestRangeConstraint .
+
+:entityProperty a bamm:Property ;
+   bamm:name "entityProperty" ;
+   bamm:preferredName "Entity Property"@en ;
+   bamm:preferredName "Komplexer Wert"@de ;
+   bamm:description "A property with a complex value."@en ;
+   bamm:description "Eine Property mit einem komplexem Wert."@de ;
+   bamm:characteristic :EntityCharacteristic .
+
+:TestRangeConstraint a bamm-c:RangeConstraint ;
+   bamm:name "TestRangeConstraint" ;
+   bamm:preferredName "Test Range Constraint"@en ;
+   bamm:preferredName "Test Range Constraint"@de ;
+   bamm:description "Restricts a numeric value to values between 0 and 100."@en ;
+   bamm:description "Beschränkt einen numerischen Wert auf Werte zwischen 0 und 100."@de ;
+   bamm-c:minValue "0"^^xsd:integer ;
+   bamm-c:maxValue "100"^^xsd:integer .
+
+:IntegerCharacteristic a bamm:Characteristic ;
+   bamm:name "IntegerCharacteristic" ;
+   bamm:preferredName "Integer Characteristic"@en ;
+   bamm:preferredName "Numerische Charakteristik"@de ;
+   bamm:description "Positive Numbers"@en ;
+   bamm:description "Positive Zahlen"@de ;
+   bamm:dataType xsd:integer .
+
+:EntityCharacteristic a bamm:Characteristic ;
+   bamm:name "EntityCharacteristic" ;
+   bamm:preferredName "Entity Characteristic"@en ;
+   bamm:preferredName "Entität Charakteristik"@de ;
+   bamm:description "Complex Values"@en ;
+   bamm:description "Komplexe Werte"@de ;
+   bamm:dataType :TestEntity .
+
+:TestEntity a bamm:Entity ;
+   bamm:name "TestEntity" ;
+   bamm:preferredName "Test Entity"@en ;
+   bamm:preferredName "Test Entität"@de ;
+   bamm:properties ( :entityList :integerList ).
+
+:entityList a bamm:Property ;
+   bamm:name "entityList" ;
+   bamm:preferredName "Entity List"@en ;
+   bamm:preferredName "Entitätliste"@de ;
+   bamm:description "A property with a list of complex value."@en ;
+   bamm:description "Eine Property mit einer Liste mit komplexen Werten."@de ;
+   bamm:characteristic [
+      a bamm-c:List ;
+      bamm:name "EntityList" ;
+      bamm:dataType :TestEntity
+   ] .
+
+:integerList a bamm:Property ;
+   bamm:name "integerList" ;
+   bamm:preferredName "Integer List"@en ;
+   bamm:preferredName "Numerische Liste"@de ;
+   bamm:description "A property with a list of numeric value."@en ;
+   bamm:description "Eine Property mit einer Liste mit numerischen Werten."@de ;
+   bamm:characteristic [
+      a bamm-c:List ;
+      bamm:name "NumericList" ;
+      bamm:dataType xsd:integer
+   ] .

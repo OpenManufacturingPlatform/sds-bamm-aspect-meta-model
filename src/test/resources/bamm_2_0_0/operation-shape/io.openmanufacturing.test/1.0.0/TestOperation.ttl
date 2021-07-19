@@ -1,0 +1,35 @@
+#
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+# See the AUTHORS file(s) distributed with this work for additional
+# information regarding authorship.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+#
+@prefix : <urn:bamm:io.openmanufacturing.test:1.0.0#> .
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+
+:TestAspect a bamm:Aspect ;
+   bamm:name "TestAspect" ;
+   bamm:properties ( ) ;
+   bamm:operations ( :TestOperation ) .
+
+:TestOperation a bamm:Operation ;
+   bamm:name "TestOperation" ;
+   bamm:preferredName "Test Operation"@en ;
+   bamm:description "Test Operation."@en ;
+   bamm:input ( :input ) ;
+   bamm:output :output .
+
+:input a bamm:Property ;
+   bamm:name "input" ;
+   bamm:characteristic bamm-c:Text .
+
+:output a bamm:Property ;
+   bamm:name "output" ;
+   bamm:characteristic bamm-c:Text .

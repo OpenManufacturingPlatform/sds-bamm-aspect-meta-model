@@ -21,7 +21,8 @@ import java.util.Optional;
  * The known versions of the Aspect Meta Model
  */
 public enum KnownVersion {
-   BAMM_1_0_0;
+   BAMM_1_0_0,
+   BAMM_2_0_0;
 
    /**
     * Returns this version as a standard version string, e.g. 1.2.3

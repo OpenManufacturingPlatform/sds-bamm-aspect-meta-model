@@ -36,4 +36,14 @@ public class UniqueEntityInstancesShapeTest extends AbstractShapeTest {
    public void testInstancesWithSomeIdenticalValuesExpectSuccess( final KnownVersion metaModelVersion ) {
       checkValidity( "unique-entity-instance-shape", "TestEntityInstanceSomeIdenticalValues", metaModelVersion );
    }
+
+   @ParameterizedTest
+   @MethodSource( value = "versionsStartingWith2_0_0" )
+   public void testIdenticalExtendingEntityInstancesExpectFailure( final KnownVersion metaModelVersion ) {
+      final String focusNode = TEST_NAMESPACE_PREFIX + "ExtendingEntityInstance";
+      final SemanticError resultForIdenticalInstance = new SemanticError( MESSAGE_IDENTICAL_INSTANCES, focusNode, "",
+            WARNING_URN, TEST_NAMESPACE_PREFIX + "ExtendingEntityInstanceTwo" );
+      expectSemanticValidationErrors( "unique-entity-instance-shape", "ExtendingEntityIdenticalInstances",
+            metaModelVersion, resultForIdenticalInstance );
+   }
 }

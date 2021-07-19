@@ -1,0 +1,29 @@
+#
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+# See the AUTHORS file(s) distributed with this work for additional
+# information regarding authorship.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+#
+@prefix : <urn:bamm:io.openmanufacturing.test:1.0.0#> .
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:TestAspectWithOptionalProperty a bamm:Aspect ;
+   bamm:name "TestAspectWithOptionalProperty" ;
+   bamm:preferredName "Test Aspect"@en ;
+   bamm:description "Test Aspect"@en ;
+   bamm:properties ( [ bamm:property :testProperty; bamm:optional true ] ) ;
+   bamm:operations ( ) .
+
+:testProperty a bamm:Property ;
+   bamm:name "testProperty" ;
+   bamm:preferredName "Test Property"@en ;
+   bamm:description "A property with a text value."@en ;
+   bamm:characteristic bamm-c:Text .

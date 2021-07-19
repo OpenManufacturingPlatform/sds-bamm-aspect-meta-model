@@ -1,0 +1,9 @@
+@prefix : <urn:bamm:io.openmanufacturing.test:1.0.0#> .
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:TestCharacteristicInstance a bamm:Characteristic ;
+	bamm:name "TestCharacteristicInstance" ;
+	bamm:preferredName "Test Characteristic Instance"@en ;
+	bamm:description "Test Characteristic Instance"@en ;
+	bamm:dataType xsd:gDay  .

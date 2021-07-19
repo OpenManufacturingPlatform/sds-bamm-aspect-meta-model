@@ -43,10 +43,10 @@ applied. The other way round they can also be used to describe a validation algo
    localized string as the value.
 ** If the Property's effective data type is not scalar, it is serialized as a named JSON object
    (with `$\{propertyName\}` being the name of the JSON property), recursively using the same rules.
-** If the Property's effective data type is an Entity which refines another Entity, it is serialized
-   as a named JSON object (with `$\{propertyName\}` being the name of the JSON property), with the
-   Properties for the Entity being the refining Properties as well as the Properties from the
-   refined Entity which are themselves not refined.
+** If the Property's effective data type is an Entity which extends another Entity, it is serialized
+   as a named JSON object (with `$\{propertyName\}` being the name of the JSON property). The Properties included for
+   the Entity, are the Properties from the Entity itself as well as all Properties from the extended Entities, i.e.
+   all Properties from `?thisEntity bamm:extends* []`.
 ** If the Property's leaf Characteristic is a
    xref:characteristics.adoc#collection-characteristic[Collection],
    xref:characteristics.adoc#collection-characteristic[List],

@@ -1,0 +1,35 @@
+# Copyright (c) 2021 Robert Bosch Manufacturing Solutions GmbH
+#
+#  See the AUTHORS file(s) distributed with this work for additional
+#  information regarding authorship.
+#
+#  This Source Code Form is subject to the terms of the Mozilla Public
+#  License, v. 2.0. If a copy of the MPL was not distributed with this
+#  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# SPDX-License-Identifier: MPL-2.0
+
+@prefix bamm: <urn:bamm:io.openmanufacturing:meta-model:2.0.0#> .
+@prefix bamm-c: <urn:bamm:io.openmanufacturing:characteristic:2.0.0#> .
+@prefix bamm-e: <urn:bamm:io.openmanufacturing:entity:2.0.0#> .
+
+bamm-e:Point3d a bamm:Entity ;
+   bamm:name "Point3d" ;
+   bamm:preferredName "Point 3D"@en ;
+   bamm:description "Defines a position in a three dimensional space."@en ;
+   bamm:properties ( bamm-e:x bamm-e:y bamm-e:z ) .
+
+bamm-e:x a bamm:Property ;
+   bamm:name "x" ;
+   bamm:preferredName "X"@en ;
+   bamm:description "The position along the X axis."@en .
+
+bamm-e:y a bamm:Property ;
+   bamm:name "y" ;
+   bamm:preferredName "Y"@en ;
+   bamm:description "The position along the Y axis."@en .
+
+bamm-e:z a bamm:Property ;
+   bamm:name "z" ;
+   bamm:preferredName "Z"@en ;
+   bamm:description "The position along the Z axis."@en .

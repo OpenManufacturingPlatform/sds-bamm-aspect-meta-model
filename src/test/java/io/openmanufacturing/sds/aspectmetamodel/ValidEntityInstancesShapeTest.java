@@ -30,6 +30,12 @@ public class ValidEntityInstancesShapeTest extends AbstractShapeTest {
    }
 
    @ParameterizedTest
+   @MethodSource( value = "versionsStartingWith2_0_0" )
+   public void testExtendingEntityInstanceExpectSuccess( final KnownVersion metaModelVersion ) {
+      checkValidity( "valid-entity-instance-shape", "ExtendingEntityInstance", metaModelVersion );
+   }
+
+   @ParameterizedTest
    @MethodSource( value = "allVersions" )
    public void testMissingRequiredPropertyExpectFailure( final KnownVersion metaModelVersion ) {
       final SemanticError resultForMissingProperty = new SemanticError(
@@ -117,6 +123,45 @@ public class ValidEntityInstancesShapeTest extends AbstractShapeTest {
             metaModelVersion );
 
       assertThat( validationError.getResultMessage() ).isEqualTo( MESSAGE_INSTANCE_INVALID_TYPE_CONTAINED_IN_LIST );
+      assertThat( validationError.getResultSeverity() ).isEqualTo( VIOLATION_URN );
+      assertThat( validationError.getValue() ).isNotEmpty();
+   }
+
+   @ParameterizedTest
+   @MethodSource( value = "versionsStartingWith2_0_0" )
+   public void testExtendingEntityInstanceMissingRequiredPropertyExpectFailure( final KnownVersion metaModelVersion ) {
+      final SemanticError resultForMissingProperty = new SemanticError( MESSAGE_INSTANCE_MISSING_REQUIRED_PROPERTY,
+            TEST_NAMESPACE_PREFIX + "ExtendingEntityInstance", "", VIOLATION_URN,
+            TEST_NAMESPACE_PREFIX + "abstractTestProperty" );
+      expectSemanticValidationErrors( "valid-entity-instance-shape", "ExtendingEntityMissingRequiredProperty",
+            metaModelVersion, resultForMissingProperty );
+   }
+
+   @ParameterizedTest
+   @MethodSource( value = "versionsStartingWith2_0_0" )
+   public void testExtendingEntityInstanceMissingOptionalPropertyExpectSuccess( final KnownVersion metaModelVersion ) {
+      checkValidity( "valid-entity-instance-shape", "ExtendingEntityMissingOptionalProperty", metaModelVersion );
+   }
+
+   @ParameterizedTest
+   @MethodSource( value = "versionsStartingWith2_0_0" )
+   public void testExtendingEntityInstanceInvalidValueType( final KnownVersion metaModelVersion ) {
+      final SemanticError resultForMissingProperty = new SemanticError( MESSAGE_INSTANCE_INVALID_VALUE_TYPE,
+            TEST_NAMESPACE_PREFIX + "ExtendingEntityInstance", TEST_NAMESPACE_PREFIX + "abstractTestProperty",
+            VIOLATION_URN, "345" );
+      expectSemanticValidationErrors( "valid-entity-instance-shape", "ExtendingEntityInstanceInvalidValueType",
+            metaModelVersion, resultForMissingProperty );
+   }
+
+   @ParameterizedTest
+   @MethodSource( value = "versionsStartingWith2_0_0" )
+   public void testExtendingEntityInstanceMissingNotInPayloadProperty( final KnownVersion metaModelVersion ) {
+      final SemanticError validationError = getSingleSemanticValidationError(
+            "valid-entity-instance-shape",
+            "ExtendingEntityInstanceMissingNotInPayloadProperty",
+            metaModelVersion );
+
+      assertThat( validationError.getResultMessage() ).isEqualTo( MESSAGE_INSTANCE_MISSING_REQUIRED_PROPERTY );
       assertThat( validationError.getResultSeverity() ).isEqualTo( VIOLATION_URN );
       assertThat( validationError.getValue() ).isNotEmpty();
    }

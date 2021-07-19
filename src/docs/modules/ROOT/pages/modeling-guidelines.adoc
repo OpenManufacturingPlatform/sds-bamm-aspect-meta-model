@@ -160,21 +160,6 @@ Example:
 include::example$aspect-sample.ttl[tags=property-declaration]
 ----
 
-The characteristic attribute may be omitted. This allows users to reuse the Property or the Entity
-using this Property and set the Characteristic specific to the users domain at a later point in
-time. A Property which is declared without a Characteristic must always be _refined_, i.e.
-overridden, in an Aspect Model, i.e. an Aspect Model may not contain a Property where the
-Characteristic has not been set either directly or by refining the Property. A Property can be
-refined by using the `bamm:refines` attribute and setting the `bamm:characteristic` attribute. The
-main use case is to be able to create shared Entities which have some Properties which are fixed and
-some Properties which can be further refined in an Aspect Model that uses the shared Entity (see
-<<declaring-time-series>> below as an example).
-
-[source,turtle,subs="attributes+"]
-----
-include::example$aspect-sample.ttl[tags=refining-declaration]
-----
-
 [[declaring-characteristics]]
 === Declaring Characteristics
 
@@ -343,17 +328,16 @@ value is the recorded value. In order to describe these semantics the shared `Ti
 Characteristic is used. This is a subclass of the `SortedSet` Characteristic and defines that the
 `dataType` must be a subclass of the `TimeSeriesEntity`.
 
-The `xref:entities.adoc#time-series-entity[TimeSeriesEntity]` has the two Properties `timestamp` and
-`value`. The `timestamp` Property is defined with the `Timestamp` Characteristic which describes
-values containing timestamps conforming to `xref:datatypes.adoc#data-types[xsd:dateTime]`, a date
-and time with or without time zone. The `value` Property is defined without a Characteristic, hence
-the semantics of the value can be defined in the specific Aspect Model.
+The `xref:entities.adoc#time-series-entity[TimeSeriesEntity]` is declared as an Abstract Entity. It defines the
+`timestamp` Property with the `Timestamp` Characteristic, which describes values containing timestamps conforming
+to `xref:datatypes.adoc#data-types[xsd:dateTime]`, a date and time with or without time zone. No `value` Property is
+defined, hence the semantics of the value can be defined in the specific Aspect Model.
 
 To create a Time Series for a specific domain, the user should instantiate the `TimeSeries`
-Collection Characteristic and set the `dataType` to an Entity which refines the `TimeSeries` Entity
+Collection Characteristic and set the `dataType` to an Entity which extends the Abstract `TimeSeries` Entity
 in order to define the semantics for the `value` Property in the context of the specific domain.
-Please see the xref:modeling-guidelines.adoc#declaring-entities[Declaring Entities] section for
-information on how to refine an Entity.
+Please see the xref:modeling-guidelines.adoc#declaring-abstract-entities[Declaring Abstract Entities] section for
+information on how to extend an Abstract Entity.
 
 Example:
 
@@ -484,6 +468,7 @@ Entities have the following attributes:
 |===
 | Attributes | Description | Required
 | `bamm:properties` | The list of Properties which make up the Entity | {ok}
+| `bamm:extends` | The Entity which is extended by this Entity | {nok}
 |===
 
 Example:
@@ -493,14 +478,35 @@ Example:
 include::example$aspect-sample.ttl[tags=entity-declaration]
 ----
 
-When an Entity is defined with a Property which has no Characteristic, for example the shared
-`xref:entities.adoc#time-series-entity[Time Series]` Entity, the Entity needs to be refined in order
-to use it. This is done by declaring an Entity with `bamm:refines` and with a Property that in turn
-refines another Property. See the following example:
+[[extending-entities]]
+==== Extending Entities
+
+Declaring that an Entity extends another Entity is done using the `bamm:extends` attribute in the Entity declaration.
+
+Example:
 
 [source,turtle,subs="attributes+"]
 ----
-include::example$aspect-sample.ttl[tags=refining-entity-declaration]
+include::example$aspect-sample.ttl[tags=extending-entity-declaration]
+----
+
+The extending Entities `:Student` and `:Teacher` contain the Properties declared in the extended Entity `:Person` as well as
+the Properties in their own declarations.
+
+The effective Property names, i.e. the payload name when `bamm:payloadName` is used, or the `bamm:name` of the Property,
+must be unique across the entire Entity inheritance chain. Otherwise the corresponding runtime payload is ambiguous.
+
+[[declaring-abstract-entities]]
+==== Declaring Abstract Entities
+
+It is also possible to declare Abstract Entities to share Properties across multiple Entities. An Abstract Entity must
+be extended by one or more Entities.
+
+Example:
+
+[source,turtle,subs="attributes+"]
+----
+include::example$aspect-sample.ttl[tags=abstract-entity-declaration]
 ----
 
 [[declaring-operations]]

@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "io.openmanufacturing"
-version = "1.0.0"
+version = "2.0.0"
 
 java {
     withJavadocJar()
@@ -42,7 +42,7 @@ publishing {
         create<MavenPublication>("mavenRelease") {
             groupId = "io.openmanufacturing"
             artifactId = "sds-aspect-meta-model"
-            version = "1.0.0"
+            version = "2.0.0"
 
             from(components["java"])
 
